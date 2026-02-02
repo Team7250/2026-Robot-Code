@@ -65,7 +65,6 @@ public class Robot extends TimedRobot {
     // Shooter
     public static TalonFX shooter1 = new TalonFX(15);
     public static TalonFX shooter2 = new TalonFX(16);
-    public static Shooter shooter = new Shooter();
 
     // Intake
     public static TalonFX RaiseLower1 = new TalonFX(17);
