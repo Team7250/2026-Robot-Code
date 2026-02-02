@@ -141,6 +141,10 @@ public class Robot extends TimedRobot {
         }
     }
 
+    public void testFunction(){
+        System.out.println("Hi");
+    }
+
     @Override
     public void autonomousPeriodic() {}
 
