@@ -1,26 +1,33 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
 public class Climb extends SubsystemBase {
-    double p1, p2;
-    public Climb(double p1, double p2) {
-        this.p1 = p1;
-        this.p2 = p2;
+    
+    int UPPOSITION = 50;
+    int DOWNPOSITION = 0;
+    
+    
+    String io;
+    public Climb(String io) {
+        this.io = io;
     }
 
-    public Command climb(String io) {
+    public Command climb() {
         return runOnce(
             () -> {
+                final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
                 switch (io) {
                     case "up":
-                        Robot.climb1.set(0.25);
-                        Robot.climb2.set(-0.25);
+                        Robot.climb1.setControl(m_request.withPosition(UPPOSITION));
+                        Robot.climb2.setControl(m_request.withPosition(UPPOSITION));
                     case "down":
-                        Robot.climb1.set(-0.25);
-                        Robot.climb2.set(0.25);
+                        Robot.climb1.setControl(m_request.withPosition(DOWNPOSITION));
+                        Robot.climb2.setControl(m_request.withPosition(DOWNPOSITION));
                     default:
                         Robot.climb1.set(0);
                         Robot.climb2.set(0);

@@ -13,8 +13,8 @@ public class Intake extends SubsystemBase {
 
 
     boolean rotate = false;
-    boolean raiselower = false;
-    public Intake(boolean rotate, boolean raiselower) {
+    String raiselower;
+    public Intake(boolean rotate, String raiselower) {
         this.rotate = rotate;
         this.raiselower = raiselower;
     }
@@ -25,12 +25,12 @@ public class Intake extends SubsystemBase {
             final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
             //if raiselower == true then it's going down
-            if(raiselower)
+            if(raiselower == "DOWN")
             {
                 Robot.RaiseLower1.setControl(m_request.withPosition(LOW));
                 Robot.RaiseLower2.setControl(m_request.withPosition(-LOW));
             }
-            else
+            else if (raiselower == "UP")
             {
                 Robot.RaiseLower1.setControl(m_request.withPosition(HIGH));
                 Robot.RaiseLower2.setControl(m_request.withPosition(-HIGH));

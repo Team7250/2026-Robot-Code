@@ -19,7 +19,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.Storage;
 
 public class Robot extends TimedRobot {
 
@@ -55,6 +59,8 @@ public class Robot extends TimedRobot {
      *  Rotate: 19
      */
 
+     //USING ON THE FLY SUBSYSTEM ADJUSTMENTS
+
     // Pigeon
     public Pigeon2 gyro = new Pigeon2(12);
 
@@ -70,6 +76,9 @@ public class Robot extends TimedRobot {
     public static TalonFX RaiseLower1 = new TalonFX(17);
     public static TalonFX RaiseLower2 = new TalonFX(18);
     public static TalonFX RotateIntake = new TalonFX(19);
+
+    // Storage
+    public static TalonFX storage = new TalonFX(17);
 
     // Controller Declarations
     public static Joystick joystick = new Joystick(0); // Patrick
@@ -158,16 +167,83 @@ public class Robot extends TimedRobot {
 
         // joystick button command bindings 
         if (cmdDebounce == false) {
+
+            /* STATE MACHINE */
+
+            /* PARAMETER LABELS */
+            //Intake: rotate (false = off, true = on), raiselower(DOWN, UP, UNCHANGED)
+            //Storage: state (ON, OFF)
+            //Shooter: mode (HIGH, LOW, or OFF)
+            //StateMachine: stateId (int)
+            //Climb: io (UP, DOWN)
+
+            // NOTHING
             xbox.a().onTrue(Commands.print("A button pressed").andThen(Commands.waitSeconds(1)).andThen(Commands.print("5 seconds passed")));
-            xbox.b().onTrue(Commands.print("B button pressed"));
-            xbox.y().onTrue(Commands.print("Y button pressed"));
-            xbox.x().onTrue(Commands.print("X button pressed"));
-            xbox.rightTrigger().onTrue(Commands.print("RT button pressed"));
-            xbox.leftTrigger().onTrue(Commands.print("LT button pressed"));
+            
+            //REST
+            xbox.b().onTrue(
+                new Intake(false, "UP").intake()
+                .alongWith(new Storage("off").storage())
+                .alongWith(new Shooter("off").shoot())
+                .alongWith(new StateMachine(0).SetState())
+            );
+            
+            //TRANSITION
+            xbox.y().onTrue(
+                new Intake(false, "UNCHANGED").intake()
+                .alongWith(new Storage("ON").storage())
+                .alongWith(new Shooter("OFF").shoot())
+                .alongWith(new StateMachine(2).SetState())
+            );
+            
+            //INTAKING
+            xbox.x().onTrue(
+                new Intake(true, "DOWN").intake()
+                .alongWith(new Storage("ON").storage())
+                .alongWith(new Shooter("OFF").shoot())
+                .alongWith(new StateMachine(1).SetState())
+            );
+            
+            //SHOOTING
+            xbox.rightTrigger().onTrue(
+                new Intake(false, "UNCHANGED").intake()
+                .alongWith(new Storage("ON").storage())
+                .alongWith(new Shooter("HIGH").shoot())
+                .alongWith(new StateMachine(3).SetState())
+            );
+            
+            //PASSING
+            xbox.leftTrigger().onTrue(
+                new Intake(false, "UNCHANGED").intake()
+                .alongWith(new Storage("ON").storage())
+                .alongWith(new Shooter("LOW").shoot())
+                .alongWith(new StateMachine(4).SetState())
+            );
+            
+            //NOTHING
             xbox.rightBumper().onTrue(Commands.print("RB button pressed"));
+            
+            //HOPPER MOVEMENT LOCK (manual override)
             xbox.leftBumper().onTrue(Commands.print("LB button pressed"));
-            xbox.povDown().onTrue(Commands.print("POV down button pressed"));
-            xbox.povUp().onTrue(Commands.print("POV up button pressed"));
+            
+            //CLIMB DOWN
+            xbox.povDown().onTrue(
+                new Intake(false, "UNCHANGED").intake()
+                .alongWith(new Storage("OFF").storage())
+                .alongWith(new Shooter("OFF").shoot())
+                .alongWith(new StateMachine(5).SetState())
+                .alongWith(new Climb("DOWN").climb())
+            );
+            
+            //CLIMB UP
+            xbox.povUp().onTrue(
+                new Intake(false, "UNCHANGED").intake()
+                .alongWith(new Storage("OFF").storage())
+                .alongWith(new Shooter("OFF").shoot())
+                .alongWith(new StateMachine(5).SetState())
+                .alongWith(new Climb("up").climb())
+            );
+            
             cmdDebounce = true;
         }
     }
