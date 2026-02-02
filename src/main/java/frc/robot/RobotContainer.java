@@ -40,7 +40,7 @@ public class RobotContainer {
     JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 1);
     JoystickButton brakeButton = new JoystickButton(joystick, 2);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public RobotContainer() {
         configureBindings();

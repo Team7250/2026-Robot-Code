@@ -1,12 +1,20 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import javax.lang.model.util.ElementScanner14;
 
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
     
@@ -14,9 +22,28 @@ public class Shooter extends SubsystemBase {
     double LOWPOWER = 30; // Rotations per second
 
 
+    Translation2d hubPosition;
+    Pose2d currentPose;
+
+    //fill in table with the necessary shooter RPM scaled by 0.5m distance from hub each time.
+    double table[];
+
+
     String mode = "";
     public Shooter(String mode) {
         this.mode = mode;
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if(alliance.isPresent())
+        {
+            if(alliance.get() == Alliance.Red)
+            {
+                hubPosition = new Translation2d(11.911, 4.305);
+            }
+            if(alliance.get() == Alliance.Blue)
+            {
+                hubPosition = new Translation2d(4.627, 4.305);
+            }
+        }
     }
 
     public Command shoot() {
@@ -27,8 +54,21 @@ public class Shooter extends SubsystemBase {
 
                 if(mode == "HIGH")
                 {
-                    Robot.shooter1.setControl(m_request.withVelocity(HIGHPOWER));
-                    Robot.shooter2.setControl(m_request.withVelocity(HIGHPOWER));
+
+                    double rps;
+                    double distanceFromHub;
+                    currentPose = RobotContainer.drivetrain.getState().Pose;
+                    distanceFromHub = currentPose.getTranslation().getDistance(hubPosition);
+                    distanceFromHub = Math.round(distanceFromHub * 2.0) / 2.0; // rounds it to the nearest 0.5
+                    distanceFromHub = (distanceFromHub * 2) - 1;
+                    rps = table[(int)distanceFromHub];
+
+
+                    Robot.shooter1.setControl(m_request.withVelocity(rps));
+                    Robot.shooter2.setControl(m_request.withVelocity(rps));
+
+                    //Robot.shooter1.setControl(m_request.withVelocity(HIGHPOWER));
+                    //Robot.shooter2.setControl(m_request.withVelocity(HIGHPOWER));
                 }
                 else if(mode == "LOW")
                 {
