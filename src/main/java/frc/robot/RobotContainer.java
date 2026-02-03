@@ -44,6 +44,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+        drivetrain.configurePathPlanner();
     }
 
     private void configureBindings() {

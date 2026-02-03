@@ -87,8 +87,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
-    private void configurePathPlanner(){
-        double driveBaseRadius = 0; //set drive base radius at some point
+    public void configurePathPlanner(){
+        System.out.println("\n\n\n\n\n\n\n\n\nConfiguring pathplanner...\n\n\n\n\n\n");
+        double driveBaseRadius = 20; //set drive base radius at some point
 
         /* Load the RobotConfig from the PathPlanner GUI settings */
         RobotConfig config;
@@ -113,7 +114,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             },
             new PPHolonomicDriveController(
                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID
-                new PIDConstants(5.0, 0.0, 0.0)  // Rotation PID
+                new PIDConstants(15.0, 0.0, 0.0)  // Rotation PID
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,

@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.lang.model.util.ElementScanner14;
 
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -54,21 +56,29 @@ public class Shooter extends SubsystemBase {
 
                 if(mode == "HIGH")
                 {
-
+                    System.out.println("Attempting to allign to Hub");
+                    /*
                     double rps;
                     double distanceFromHub;
                     currentPose = RobotContainer.drivetrain.getState().Pose;
                     distanceFromHub = currentPose.getTranslation().getDistance(hubPosition);
                     distanceFromHub = Math.round(distanceFromHub * 2.0) / 2.0; // rounds it to the nearest 0.5
                     distanceFromHub = (distanceFromHub * 2) - 1;
-                    rps = table[(int)distanceFromHub];
+                    rps = table[(int)distanceFromHub];*/
+                    currentPose = RobotContainer.drivetrain.getState().Pose;
 
+                    Translation2d translationToTarget = currentPose.getTranslation().minus(hubPosition);
+                    Rotation2d angleToTarget = new Rotation2d(translationToTarget.getX(), translationToTarget.getY());
+                    Pose2d targetPose = new Pose2d(currentPose.getTranslation(),angleToTarget);
 
-                    Robot.shooter1.setControl(m_request.withVelocity(rps));
-                    Robot.shooter2.setControl(m_request.withVelocity(rps));
+                    AutoBuilder.pathfindToPose(targetPose, new PathConstraints(3.0, 1.5, 360, 720));
 
-                    //Robot.shooter1.setControl(m_request.withVelocity(HIGHPOWER));
-                    //Robot.shooter2.setControl(m_request.withVelocity(HIGHPOWER));
+                    
+                    //Robot.shooter1.setControl(m_request.withVelocity(rps));
+                    //Robot.shooter2.setControl(m_request.withVelocity(rps));
+
+                    Robot.shooter1.setControl(m_request.withVelocity(HIGHPOWER));
+                    Robot.shooter2.setControl(m_request.withVelocity(HIGHPOWER));
                 }
                 else if(mode == "LOW")
                 {
