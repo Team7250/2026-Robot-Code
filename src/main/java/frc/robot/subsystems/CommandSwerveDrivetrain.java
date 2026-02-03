@@ -114,7 +114,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             },
             new PPHolonomicDriveController(
                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID
-                new PIDConstants(15.0, 0.0, 0.0)  // Rotation PID
+                new PIDConstants(5.0, 0.0, 0.0)  // Rotation PID
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
@@ -321,7 +321,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        updateVision();
+        //updateVision();
     }
 
     private void startSimThread() {

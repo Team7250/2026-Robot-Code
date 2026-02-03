@@ -268,7 +268,9 @@ public class Robot extends TimedRobot {
     public void testExit() {}
 
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+        
+    }
 
     public void configureMotors(TalonFX motor, int v, int a, int j) {
         TalonFXConfiguration TalonFXConfigs = new TalonFXConfiguration();
