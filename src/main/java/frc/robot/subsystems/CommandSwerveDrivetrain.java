@@ -89,7 +89,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void configurePathPlanner(){
         System.out.println("\n\n\n\n\n\n\n\n\nConfiguring pathplanner...\n\n\n\n\n\n");
-        double driveBaseRadius = 20; //set drive base radius at some point
 
         /* Load the RobotConfig from the PathPlanner GUI settings */
         RobotConfig config;
