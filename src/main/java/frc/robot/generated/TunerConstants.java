@@ -30,9 +30,8 @@ public class TunerConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0).withKV(0.124);
-
+        .withKP(5.0).withKI(0).withKD(0.5)     // Higher kD = more damping
+        .withKS(0.1).withKV(0.12).withKA(0.02);
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
@@ -74,7 +73,7 @@ public class TunerConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(9.15);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(2.15);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -94,7 +93,7 @@ public class TunerConstants {
     private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
     // Simulated voltage necessary to overcome friction
     private static final Voltage kSteerFrictionVoltage = Volts.of(0.2);
-    private static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
+    private static final Voltage kDriveFrictionVoltage = Volts.of(0.5);
 
     public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
             .withCANBusName(kCANBus.getName())

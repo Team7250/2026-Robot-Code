@@ -39,7 +39,7 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.004; // 4 ms
+    private static final double kSimLoopPeriod = 0.02; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
@@ -112,9 +112,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 );
             },
+
             new PPHolonomicDriveController(
-                new PIDConstants(5.0, 0.0, 0.0), // Translation PID
-                new PIDConstants(5.0, 0.0, 0.0)  // Rotation PID
+                new PIDConstants(0, 0, 0), // Translation PID
+                new PIDConstants(0, 0.0, 0.0)  // Rotation PID
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,

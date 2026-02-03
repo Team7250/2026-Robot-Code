@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -14,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -83,6 +85,11 @@ public class Telemetry {
     };
 
     private final double[] m_poseArray = new double[3];
+
+    static Field2d m_field = new Field2d();
+    public static void setTargetPose(Pose2d target) {
+        m_field.getObject("target").setPose(target);
+    }
 
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     public void telemeterize(SwerveDriveState state) {
