@@ -48,7 +48,7 @@ public class RobotContainer {
 
     // Joysticks and buttons
     public Joystick joystick = Robot.joystick;
-    JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 1);
+    JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 4);
     JoystickButton brakeButton = new JoystickButton(joystick, 2);
     public static CommandXboxController xbox = new CommandXboxController(1); // Alex
 
@@ -74,11 +74,13 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(joystick.getRawAxis(1) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(joystick.getRawAxis(0) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
+            
+            drivetrain.applyRequest(() ->{
+                double reduction = (-Robot.joystick.getRawAxis(3) + 1) / 2;
+                return drive.withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction); // Drive counterclockwise with negative X (left)
+            })
         );
 
         // Idle while the robot is disabled. This ensures the configured
@@ -89,7 +91,7 @@ public class RobotContainer {
         );
 
         //brakes
-        brakeButton.whileTrue(drivetrain.applyRequest(() -> brake));
+        //brakeButton.whileTrue(drivetrain.applyRequest(() -> brake));
 
         /* STATE MACHINE */
 
