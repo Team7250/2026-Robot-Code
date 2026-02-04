@@ -59,8 +59,6 @@ public class Robot extends TimedRobot {
      *  Rotate: 19
      */
 
-     //USING ON THE FLY SUBSYSTEM ADJUSTMENTS
-
     // Pigeon
     public Pigeon2 gyro = new Pigeon2(12);
 
@@ -78,11 +76,10 @@ public class Robot extends TimedRobot {
     public static TalonFX RotateIntake = new TalonFX(19);
 
     // Storage
-    public static TalonFX storage = new TalonFX(17);
+    public static TalonFX storage1 = new TalonFX(17);
 
     // Controller Declarations
     public static Joystick joystick = new Joystick(0); // Patrick
-    public static CommandXboxController xbox = new CommandXboxController(1); // Alex
 
     // Joystick Button/Axis Declarations
     public static JoystickButton orientSwitch = new JoystickButton(joystick, 2);
@@ -168,81 +165,7 @@ public class Robot extends TimedRobot {
         // joystick button command bindings 
         if (cmdDebounce == false) {
 
-            /* STATE MACHINE */
-
-            /* PARAMETER LABELS */
-            //Intake: rotate (false = off, true = on), raiselower(DOWN, UP, UNCHANGED)
-            //Storage: state (ON, OFF)
-            //Shooter: mode (HIGH, LOW, or OFF)
-            //StateMachine: stateId (int)
-            //Climb: io (UP, DOWN)
-
-            // NOTHING
-            xbox.a().onTrue(Commands.print("A button pressed").andThen(Commands.waitSeconds(1)).andThen(Commands.print("5 seconds passed")));
             
-            //REST
-            xbox.b().onTrue(
-                new Intake(false, "UP").intake()
-                .alongWith(new Storage("off").storage())
-                .alongWith(new Shooter("off").shoot())
-                .alongWith(new StateMachine(0).SetState())
-            );
-            
-            //TRANSITION
-            xbox.y().onTrue(
-                new Intake(false, "UNCHANGED").intake()
-                .alongWith(new Storage("ON").storage())
-                .alongWith(new Shooter("OFF").shoot())
-                .alongWith(new StateMachine(2).SetState())
-            );
-            
-            //INTAKING
-            xbox.x().onTrue(
-                new Intake(true, "DOWN").intake()
-                .alongWith(new Storage("ON").storage())
-                .alongWith(new Shooter("OFF").shoot())
-                .alongWith(new StateMachine(1).SetState())
-            );
-            
-            //SHOOTING
-            xbox.rightTrigger().onTrue(
-                new Intake(false, "UNCHANGED").intake()
-                .alongWith(new Storage("ON").storage())
-                .alongWith(new Shooter("HIGH").shoot())
-                .alongWith(new StateMachine(3).SetState())
-            );
-            
-            //PASSING
-            xbox.leftTrigger().onTrue(
-                new Intake(false, "UNCHANGED").intake()
-                .alongWith(new Storage("ON").storage())
-                .alongWith(new Shooter("LOW").shoot())
-                .alongWith(new StateMachine(4).SetState())
-            );
-            
-            //NOTHING
-            xbox.rightBumper().onTrue(Commands.print("RB button pressed"));
-            
-            //HOPPER MOVEMENT LOCK (manual override)
-            xbox.leftBumper().onTrue(Commands.print("LB button pressed"));
-            
-            //CLIMB DOWN
-            xbox.povDown().onTrue(
-                new Intake(false, "UNCHANGED").intake()
-                .alongWith(new Storage("OFF").storage())
-                .alongWith(new Shooter("OFF").shoot())
-                .alongWith(new StateMachine(5).SetState())
-                .alongWith(new Climb("DOWN").climb())
-            );
-            
-            //CLIMB UP
-            xbox.povUp().onTrue(
-                new Intake(false, "UNCHANGED").intake()
-                .alongWith(new Storage("OFF").storage())
-                .alongWith(new Shooter("OFF").shoot())
-                .alongWith(new StateMachine(5).SetState())
-                .alongWith(new Climb("up").climb())
-            );
             
             cmdDebounce = true;
         }

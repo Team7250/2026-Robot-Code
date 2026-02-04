@@ -14,12 +14,10 @@ public class Intake extends SubsystemBase {
 
     boolean rotate = false;
     String raiselower;
-    public Intake(boolean rotate, String raiselower) {
-        this.rotate = rotate;
-        this.raiselower = raiselower;
+    public Intake() {
     }
 
-    public Command intake() {
+    public Command intake(boolean rotate, String raiselower) {
         return runOnce(() -> {
             //use motion magic to control the position
             final MotionMagicVoltage m_request = new MotionMagicVoltage(0);

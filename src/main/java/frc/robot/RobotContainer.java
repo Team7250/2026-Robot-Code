@@ -24,7 +24,12 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.Storage;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -45,6 +50,15 @@ public class RobotContainer {
     public Joystick joystick = Robot.joystick;
     JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 1);
     JoystickButton brakeButton = new JoystickButton(joystick, 2);
+    public static CommandXboxController xbox = new CommandXboxController(1); // Alex
+
+
+    //Subsystems
+    public static Intake intake = new Intake();
+    public static Shooter shooter = new Shooter();
+    public static Climb climb = new Climb();
+    public static StateMachine stateMachine = new StateMachine();
+    public static Storage storage = new Storage();
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -76,6 +90,82 @@ public class RobotContainer {
 
         //brakes
         brakeButton.whileTrue(drivetrain.applyRequest(() -> brake));
+
+        /* STATE MACHINE */
+
+            /* PARAMETER LABELS */
+            //Intake: rotate (false = off, true = on), raiselower(DOWN, UP, UNCHANGED)
+            //Storage: state (ON, OFF)
+            //Shooter: mode (HIGH, LOW, or OFF)
+            //StateMachine: stateId (int)
+            //Climb: io (UP, DOWN)
+
+            // NOTHING
+            xbox.a().onTrue(Commands.print("A button pressed").andThen(Commands.waitSeconds(1)).andThen(Commands.print("5 seconds passed")));
+            
+            //REST
+            xbox.b().onTrue(
+                intake.intake(false, "UP")
+                .alongWith(storage.storage("OFF"))
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(0))
+            );
+            
+            //TRANSITION
+            xbox.y().onTrue(
+                intake.intake(false, "UNCHANGED")
+                .alongWith(storage.storage("ON"))
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(2))
+            );
+            
+            //INTAKING
+            xbox.x().onTrue(
+                intake.intake(true, "DOWN")
+                .alongWith(storage.storage("ON"))
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(1))
+            );
+            
+            //SHOOTING
+            xbox.rightTrigger().onTrue(
+                intake.intake(false, "UNCHANGED")
+                .alongWith(storage.storage("ON"))
+                .alongWith(shooter.shoot("HIGH"))
+                .alongWith(stateMachine.SetState(1))
+            );
+            
+            //PASSING
+            xbox.leftTrigger().onTrue(
+                intake.intake(false, "UNCHANGED")
+                .alongWith(storage.storage("ON"))
+                .alongWith(shooter.shoot("LOW"))
+                .alongWith(stateMachine.SetState(4))
+            );
+            
+            //NOTHING
+            xbox.rightBumper().onTrue(Commands.print("RB button pressed"));
+            
+            //HOPPER MOVEMENT LOCK (manual override)
+            xbox.leftBumper().onTrue(Commands.print("LB button pressed"));
+            
+            //CLIMB DOWN
+            xbox.povDown().onTrue(
+                intake.intake(false, "UNCHANGED")
+                .alongWith(storage.storage("OFF"))
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(5))
+                .alongWith(climb.climb("DOWN"))
+            );
+            
+            //CLIMB UP
+            xbox.povUp().onTrue(
+                intake.intake(false, "UNCHANGED")
+                .alongWith(storage.storage("OFF"))
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(5))
+                .alongWith(climb.climb("UP"))
+            );
 
         
 

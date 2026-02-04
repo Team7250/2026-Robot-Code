@@ -13,11 +13,10 @@ public class Climb extends SubsystemBase {
     
     
     String io;
-    public Climb(String io) {
-        this.io = io;
+    public Climb() {
     }
 
-    public Command climb() {
+    public Command climb(String io) {
         return runOnce(
             () -> {
                 final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
