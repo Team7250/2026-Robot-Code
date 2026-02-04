@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
-
-import javax.lang.model.util.ElementScanner14;
-
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,84 +18,78 @@ import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
     
-    double HIGHPOWER = 60; // Rotations per second
-    double LOWPOWER = 30; // Rotations per second
+    private final double HIGHPOWER = 60; // Rotations per second
+    private final double LOWPOWER = 30;  // Rotations per second
 
+    // Pre-allocate the swerve request
+    private final FieldCentricFacingAngle driveAtAngle = 
+        new SwerveRequest.FieldCentricFacingAngle();
 
-    Translation2d hubPosition;
-    Pose2d targetPose = new Pose2d();
-    Pose2d currentPose;
+    public Shooter() {}
 
-    //fill in table with the necessary shooter RPM scaled by 0.5m distance from hub each time.
-    double table[];
-
-
-    String mode = "";
-    public Shooter() {
-        Optional<Alliance> alliance = DriverStation.getAlliance();
-        if(alliance.isPresent())
-        {
-            if(alliance.get() == Alliance.Red)
-            {
-                hubPosition = new Translation2d(11.911, 4.305);
-            }
-            if(alliance.get() == Alliance.Blue)
-            {
-                hubPosition = new Translation2d(4.627, 4.305);
-            }
-        }
-    }
+    private final edu.wpi.first.math.controller.PIDController headingPID = 
+        new edu.wpi.first.math.controller.PIDController(5.0, 0, 0.1); 
 
     public Command shoot(String mode) {
-        return Commands.deferredProxy(() -> {
-            currentPose = RobotContainer.drivetrain.getState().Pose;
+        if(mode.equals("HIGH"))
+        {
+            return Commands.deferredProxy(() -> {
+                // Hub Positions
+                Optional<Alliance> alliance = DriverStation.getAlliance();
+                final Translation2d hubPosition = (alliance.isPresent() && alliance.get() == Alliance.Red)
+                    ? new Translation2d(11.911, 4.305)
+                    : new Translation2d(4.627, 4.305);
 
-            
-            Command align = Commands.runOnce(() -> {
-                Translation2d translationToTarget = currentPose.getTranslation().minus(hubPosition);
-                Rotation2d angleToTarget = translationToTarget.getAngle();
-                targetPose = new Pose2d(currentPose.getTranslation(),angleToTarget);
-                System.out.println("Pathing to " + targetPose);
-            }).andThen(AutoBuilder.pathfindToPose(targetPose, new PathConstraints(3.0, 1.5, 360, 720)));
-            
+                // Configure the PID for circular wrapping (so it doesn't spin 359 degrees to go left 1 degree)
+                headingPID.enableContinuousInput(-Math.PI, Math.PI);
 
-            Command setShooterRPS = runOnce(() ->{
-                    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-                    m_request.Acceleration = 500;
+                // The Aiming Command
+                Command aimAndDrive = Commands.run(() -> {
+                    Pose2d currentPose = RobotContainer.drivetrain.getState().Pose;
+                    
+                    // MATH: Calculate angle to hub
+                    Rotation2d targetAngle = hubPosition.minus(currentPose.getTranslation()).getAngle();
 
-                    if(mode.equals("HIGH"))
-                    {
-                        System.out.println("Attempting to allign to Hub");
-                        /*
-                        double rps;
-                        double distanceFromHub;
-                        currentPose = RobotContainer.drivetrain.getState().Pose;
-                        distanceFromHub = currentPose.getTranslation().getDistance(hubPosition);
-                        distanceFromHub = Math.round(distanceFromHub * 2.0) / 2.0; // rounds it to the nearest 0.5
-                        distanceFromHub = (distanceFromHub * 2) - 1;
-                        rps = table[(int)distanceFromHub];*/
-                        
-                        
-                        //Robot.shooter1.setControl(m_request.withVelocity(rps));
-                        //Robot.shooter2.setControl(m_request.withVelocity(rps));
+                    // Calculate rotational velocity
+                    // We use current rotation and target angle (both in radians)
+                    double rotationOutput = headingPID.calculate(
+                        currentPose.getRotation().getRadians(), 
+                        targetAngle.getRadians()
+                    );
 
-                        Robot.shooter1.setControl(m_request.withVelocity(HIGHPOWER));
-                        Robot.shooter2.setControl(m_request.withVelocity(HIGHPOWER));
-                    }
-                    else if(mode.equals("LOW"))
-                    {
-                        Robot.shooter1.setControl(m_request.withVelocity(LOWPOWER));
-                        Robot.shooter2.setControl(m_request.withVelocity(LOWPOWER));
-                    }
-                    else
-                    {
-                        Robot.shooter1.setControl(m_request.withVelocity(0));
-                        Robot.shooter2.setControl(m_request.withVelocity(0));
-                    }
-                }
-            );
+                    // Use the standard FieldCentric request
+                    RobotContainer.drivetrain.setControl(
+                        new SwerveRequest.FieldCentric()
+                            .withVelocityX(-Robot.joystick.getRawAxis(1) * 1.0)
+                            .withVelocityY(-Robot.joystick.getRawAxis(0) * 1.0)
+                            .withRotationalRate(rotationOutput) // Apply our PID result
+                            .withDeadband(0.1)
+                    );
+                }, RobotContainer.drivetrain);
 
-            return align.alongWith(setShooterRPS);
-    }   );
+                // Shooter Motor Command
+                Command spinUp = runOnce(() -> {
+                    double rps = mode.equals("HIGH") ? HIGHPOWER : (mode.equals("LOW") ? LOWPOWER : 0);
+                    Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
+                    Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+                });
+
+                return spinUp.andThen(aimAndDrive).finallyDo((interrupted) -> stopShooter());
+            });
+        }
+        else if (mode.equals("LOW"))
+        {
+            return Commands.print("PASSING MODE");
+        }
+        else
+        {
+            return Commands.print("SHOOTER OFF");
+        }
+        
+    }
+
+    public void stopShooter() {
+        Robot.shooter1.setControl(new MotionMagicVelocityVoltage(0));
+        Robot.shooter2.setControl(new MotionMagicVelocityVoltage(0));
     }
 }
