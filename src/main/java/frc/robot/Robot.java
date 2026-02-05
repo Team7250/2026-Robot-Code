@@ -12,8 +12,10 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,6 +26,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Storage;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class Robot extends TimedRobot {
 
@@ -94,6 +98,13 @@ public class Robot extends TimedRobot {
     // debounce
     private boolean cmdDebounce = false;
 
+    AddressableLED m_led = new AddressableLED(9);
+    AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(10);
+
+    //LED Patterns
+    LEDPattern redpattern = LEDPattern.solid(Color.kRed);
+    LEDPattern gradpattern = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kTomato, Color.kAqua);
+
     
 
     /* log and replay timestamp and joystick data */
@@ -104,7 +115,14 @@ public class Robot extends TimedRobot {
     public Robot() {
         m_robotContainer = new RobotContainer();
 
-        
+        //LED
+        m_ledBuffer = new AddressableLEDBuffer(60);
+        m_led.setLength(m_ledBuffer.getLength());
+
+        m_led.setData(m_ledBuffer);
+        m_led.start();
+
+        //Motors
 
         configureMotors(climb1, 80, 160, 1600);
         configureMotors(climb2, 80, 160, 1600);
@@ -123,8 +141,11 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run(); 
+        CommandScheduler.getInstance().run();
 
+        //LED Pattern apply
+        redpattern.applyTo(m_ledBuffer);
+        m_led.setData(m_ledBuffer);
         
     }
 
