@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -30,6 +31,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Storage;
+import frc.robot.subsystems.booltoggle;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -48,9 +50,11 @@ public class RobotContainer {
 
     // Joysticks and buttons
     public Joystick joystick = Robot.joystick;
+    public JoystickButton orientSwitch = Robot.orientSwitch;
     JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 4);
     JoystickButton brakeButton = new JoystickButton(joystick, 2);
     public static CommandXboxController xbox = new CommandXboxController(1); // Alex
+    boolean fieldOrient = true;
 
 
     //Subsystems
@@ -59,6 +63,7 @@ public class RobotContainer {
     public static Climb climb = new Climb();
     public static StateMachine stateMachine = new StateMachine();
     public static Storage storage = new Storage();
+    public static booltoggle btoggle = new booltoggle();
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -169,10 +174,14 @@ public class RobotContainer {
                 .alongWith(climb.climb("UP"))
             );
 
+            orientSwitch.onTrue(
+                btoggle.toggleBoolean()
+            );
+
         
 
         /* 
-        Commenting this out because I have no clue what it does, it seems like 
+        Commenting this out because I have no clue what it does, it seems like
         while you're holding a button it just points your wheels instead
         of driving? There was no commented explanation.
 
