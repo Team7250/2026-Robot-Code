@@ -21,10 +21,6 @@ public class Shooter extends SubsystemBase {
     private final double HIGHPOWER = 60; // Rotations per second
     private final double LOWPOWER = 30;  // Rotations per second
 
-    // Pre-allocate the swerve request
-    private final FieldCentricFacingAngle driveAtAngle = 
-        new SwerveRequest.FieldCentricFacingAngle();
-
     public Shooter() {}
 
     private final edu.wpi.first.math.controller.PIDController headingPID = 

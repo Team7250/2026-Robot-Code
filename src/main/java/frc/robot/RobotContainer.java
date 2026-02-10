@@ -31,18 +31,22 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Storage;
-import frc.robot.subsystems.booltoggle;
 import frc.robot.subsystems.infeeder;
 
 public class RobotContainer {
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     //magnitude changed to spin at a slower rate
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    public static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    public static SwerveRequest.RobotCentric rcdrive = new SwerveRequest.RobotCentric()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    
+        
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -64,8 +68,8 @@ public class RobotContainer {
     public static Climb climb = new Climb();
     public static StateMachine stateMachine = new StateMachine();
     public static Storage storage = new Storage();
-    public static booltoggle btoggle = new booltoggle();
     public static infeeder infeed = new infeeder();
+
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -77,18 +81,30 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            
-            drivetrain.applyRequest(() ->{
-                double reduction = (-Robot.joystick.getRawAxis(3) + 1) / 2;
-                return drive.withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction); // Drive counterclockwise with negative X (left)
+            drivetrain.applyRequest(() -> {
+                double reduction = (-joystick.getRawAxis(3) + 1) / 2;
+                
+
+                if (fieldOrient)
+                {
+                    return drive
+                    .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
+                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
+                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                }
+                else
+                {
+                    return rcdrive
+                    .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
+                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
+                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                }
+                
             })
         );
+
+
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -184,7 +200,10 @@ public class RobotContainer {
             );
 
             orientSwitch.onTrue(
-                btoggle.toggleBoolean()
+                Commands.runOnce(() -> {
+                fieldOrient = !fieldOrient;
+                System.out.println("Field Oriented: " + fieldOrient);
+        })
             );
 
         
