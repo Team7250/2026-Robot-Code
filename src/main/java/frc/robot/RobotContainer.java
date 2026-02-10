@@ -32,6 +32,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.booltoggle;
+import frc.robot.subsystems.infeeder;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -64,6 +65,7 @@ public class RobotContainer {
     public static StateMachine stateMachine = new StateMachine();
     public static Storage storage = new Storage();
     public static booltoggle btoggle = new booltoggle();
+    public static infeeder infeed = new infeeder();
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -115,6 +117,7 @@ public class RobotContainer {
                 intake.intake(false, "UP")
                 .alongWith(storage.storage("OFF"))
                 .alongWith(shooter.shoot("OFF"))
+                .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(0))
             );
             
@@ -123,6 +126,7 @@ public class RobotContainer {
                 intake.intake(false, "UNCHANGED")
                 .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("OFF"))
+                .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(2))
             );
             
@@ -131,6 +135,7 @@ public class RobotContainer {
                 intake.intake(true, "DOWN")
                 .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("OFF"))
+                .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(1))
             );
             
@@ -139,6 +144,7 @@ public class RobotContainer {
                 intake.intake(false, "UNCHANGED")
                 .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("HIGH"))
+                .alongWith(infeed.feed(1))
                 .alongWith(stateMachine.SetState(1))
             );
             
@@ -147,6 +153,7 @@ public class RobotContainer {
                 intake.intake(false, "UNCHANGED")
                 .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("LOW"))
+                .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(4))
             );
             
@@ -161,6 +168,7 @@ public class RobotContainer {
                 intake.intake(false, "UNCHANGED")
                 .alongWith(storage.storage("OFF"))
                 .alongWith(shooter.shoot("OFF"))
+                .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("DOWN"))
             );
@@ -170,6 +178,7 @@ public class RobotContainer {
                 intake.intake(false, "UNCHANGED")
                 .alongWith(storage.storage("OFF"))
                 .alongWith(shooter.shoot("OFF"))
+                .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("UP"))
             );

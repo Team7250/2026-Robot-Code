@@ -10,6 +10,11 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -61,6 +66,8 @@ public class Robot extends TimedRobot {
      *  RaiseLower1: 17
      *  RaiseLower2: 18
      *  Rotate: 19
+     * INFEEDER
+     *  feeder: 20
      */
 
     // Pigeon
@@ -77,10 +84,13 @@ public class Robot extends TimedRobot {
     // Intake
     public static TalonFX RaiseLower1 = new TalonFX(17);
     public static TalonFX RaiseLower2 = new TalonFX(18);
-    public static TalonFX RotateIntake = new TalonFX(19);
+    public static SparkMax RotateIntake = new SparkMax(19, MotorType.kBrushless);
 
     // Storage
     public static TalonFX storage1 = new TalonFX(17);
+
+    // Infeeder
+    public static TalonFX feeder = new TalonFX(20);
 
     // Controller Declarations
     public static Joystick joystick = new Joystick(0); // Patrick
@@ -132,7 +142,8 @@ public class Robot extends TimedRobot {
 
         configureMotors(RaiseLower1, 80, 160, 1600);
         configureMotors(RaiseLower2, 80, 160, 1600);
-        configureMotors(RotateIntake, 80, 160, 1600);
+        SparkMaxConfig config = new SparkMaxConfig();
+        RotateIntake.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
         
         
