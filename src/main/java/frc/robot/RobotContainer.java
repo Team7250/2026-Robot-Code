@@ -124,9 +124,6 @@ public class RobotContainer {
             //Shooter: mode (HIGH, LOW, or OFF)
             //StateMachine: stateId (int)
             //Climb: io (UP, DOWN)
-
-            // NOTHING
-            xbox.a().onTrue(Commands.print("A button pressed").andThen(Commands.waitSeconds(1)).andThen(Commands.print("5 seconds passed")));
             
             //REST
             xbox.b().onTrue(
@@ -161,7 +158,7 @@ public class RobotContainer {
                 .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("HIGH"))
                 .alongWith(infeed.feed(1))
-                .alongWith(stateMachine.SetState(1))
+                .alongWith(stateMachine.SetState(3))
             );
             
             //PASSING
@@ -174,7 +171,13 @@ public class RobotContainer {
             );
             
             //NOTHING
-            xbox.rightBumper().onTrue(Commands.print("RB button pressed"));
+            xbox.rightBumper().onTrue(
+                intake.intake(false, "UNCHANGED")
+                .alongWith(storage.storage("ON"))
+                .alongWith(shooter.shoot("HIGH"))
+                .alongWith(infeed.feed(1))
+                .alongWith(stateMachine.SetState(7))
+                );
             
             //HOPPER MOVEMENT LOCK (manual override)
             xbox.leftBumper().onTrue(Commands.print("LB button pressed"));

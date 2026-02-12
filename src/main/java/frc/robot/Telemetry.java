@@ -41,7 +41,7 @@ public class Telemetry {
     }
 
     /* What to publish over networktables for telemetry */
-    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    private final NetworkTableInstance inst = NetworkTableInstance.getDefault(); 
 
     /* Robot swerve drive state */
     private final NetworkTable driveStateTable = inst.getTable("DriveState");

@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.HootAutoReplay;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
@@ -69,6 +73,9 @@ public class Robot extends TimedRobot {
      * INFEEDER
      *  feeder: 20
      */
+
+    //CANIVORE
+    public static CANBus CANivore = new CANBus("drivetrain");
 
     // Pigeon
     public Pigeon2 gyro = new Pigeon2(12);
@@ -142,6 +149,7 @@ public class Robot extends TimedRobot {
 
         configureMotors(RaiseLower1, 80, 160, 1600);
         configureMotors(RaiseLower2, 80, 160, 1600);
+        RaiseLower2.setControl(new StrictFollower(17));
         SparkMaxConfig config = new SparkMaxConfig();
         RotateIntake.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 

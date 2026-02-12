@@ -40,6 +40,9 @@ public class StateMachine extends SubsystemBase {
                 case 6:
                     System.out.println("MANUAL");
                     break;
+                case 7:
+                    System.out.println("SHOOT AND INTAKE");
+                break;
                 default:
                     System.out.println("INVALID STATE ID!");
             }
