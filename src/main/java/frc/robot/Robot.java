@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -35,6 +36,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Storage;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
@@ -166,6 +169,20 @@ public class Robot extends TimedRobot {
         redpattern.applyTo(m_ledBuffer);
         m_led.setData(m_ledBuffer);
         
+        Pose2d pose = RobotContainer.drivetrain.getState().Pose;
+        ChassisSpeeds speeds = RobotContainer.drivetrain.getState().Speeds;
+
+        SmartDashboard.putNumberArray("DriveState/PoseArray", new double[] {
+            pose.getX(),
+            pose.getY(),
+            pose.getRotation().getRadians()
+        });
+
+        SmartDashboard.putNumberArray("DriveState/SpeedsArray", new double[] {
+            speeds.vxMetersPerSecond,
+            speeds.vyMetersPerSecond,
+            speeds.omegaRadiansPerSecond
+        });
     }
 
     @Override
