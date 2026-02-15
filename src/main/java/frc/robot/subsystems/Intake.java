@@ -10,6 +10,8 @@ public class Intake extends SubsystemBase {
 
     double LOW = 30;
     double HIGH = 0;
+     //use motion magic to control the position
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
 
     boolean rotate = false;
@@ -17,10 +19,19 @@ public class Intake extends SubsystemBase {
     public Intake() {
     }
 
+    public Command testIntake(double rotationVoltage, double position)
+    {
+        return runOnce(() -> {
+            Robot.RaiseLower1.setControl(m_request.withPosition(position));
+            Robot.RaiseLower2.setControl(m_request.withPosition(position));
+            Robot.RotateIntake.set(rotationVoltage);
+        });
+        
+    }
+
     public Command intake(boolean rotate, String raiselower) {
         return runOnce(() -> {
-            //use motion magic to control the position
-            final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+           
 
             //if raiselower == true then it's going down
             if(raiselower == "DOWN")

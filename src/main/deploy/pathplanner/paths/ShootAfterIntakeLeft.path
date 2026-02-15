@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.5304830053667258,
+        "y": 5.9577101967799635
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9312047823660639,
+        "y": 6.192737359484254
+      },
+      "isLocked": false,
+      "linkedName": "Endpoint2LeftAuto"
+    },
+    {
+      "anchor": {
+        "x": 2.0394454382826472,
+        "y": 5.9577101967799635
+      },
+      "prevControl": {
+        "x": 0.8336940098147412,
+        "y": 6.083432180777668
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "stopintake",
+      "waypointRelativePos": 0.04406779661016946,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.9525423728813559,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -36.81219798809548
+  },
+  "reversed": false,
+  "folder": "LeftAutoDepot",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

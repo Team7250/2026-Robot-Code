@@ -10,16 +10,33 @@ public class Climb extends SubsystemBase {
     
     int UPPOSITION = 50;
     int DOWNPOSITION = 0;
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     
     
     String io;
     public Climb() {
     }
 
+    //test functions for climb, one for positional and one for voltage
+    public Command testClimb(double position)
+    {
+        return runOnce(() -> {
+            Robot.climb1.setControl(m_request.withPosition(position));
+            Robot.climb2.setControl(m_request.withPosition(position));
+        });
+    }
+    public Command testClimbVoltage(double voltage)
+    {
+        return runOnce(() -> {
+            Robot.climb1.set(voltage);
+            Robot.climb2.set(voltage);
+        });
+    }
+
     public Command climb(String io) {
         return runOnce(
             () -> {
-                final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+                
                 switch (io) {
                     case "up":
                         Robot.climb1.setControl(m_request.withPosition(UPPOSITION));

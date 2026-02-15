@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,16 +18,40 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
-    
-    private final double HIGHPOWER = 60; // Rotations per second
-    private final double LOWPOWER = 30;  // Rotations per second
 
-    public Shooter() {}
+    //create a map for smooth velocity scaling
+    private final InterpolatingDoubleTreeMap shooterVelocitiesMap = new InterpolatingDoubleTreeMap();
 
+    public Shooter() {
+        //we add our keys in the format of distance (meters), velocity (rotations per second)
+        shooterVelocitiesMap.put(0.5, 10.0);
+        shooterVelocitiesMap.put(1.0, 20.0);
+        shooterVelocitiesMap.put(1.5, 30.0);
+        shooterVelocitiesMap.put(2.0, 40.0);
+        shooterVelocitiesMap.put(2.5, 50.0);
+        shooterVelocitiesMap.put(3.0, 60.0);
+        shooterVelocitiesMap.put(3.5, 70.0);
+        shooterVelocitiesMap.put(4.0, 80.0);
+        shooterVelocitiesMap.put(4.5, 90.0);
+        shooterVelocitiesMap.put(5.0, 100.0);
+    }
+    //we'll have to tune this when robot is ready
     private final edu.wpi.first.math.controller.PIDController headingPID = 
         new edu.wpi.first.math.controller.PIDController(5.0, 0, 0.1); 
 
+    //this is for calculating the vluaes that we need to put into the tree
+    public Command testShooters(double rps)
+    {
+        return runOnce(() -> {
+            Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
+            Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+        });
+    }
+
+    //the actual shoot method
     public Command shoot(String mode) {
+
+        //HIGH means auto aim while driving
         if(mode.equals("HIGH"))
         {
             return Commands.deferredProxy(() -> {
@@ -61,11 +86,16 @@ public class Shooter extends SubsystemBase {
                             .withRotationalRate(rotationOutput) // Apply our PID result
                             .withDeadband(0.1)
                     );
+
+                    double rps = getShooterRate();
+                    Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
+                    Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+                    
                 }, RobotContainer.drivetrain);
 
                 // Shooter Motor Command
                 Command spinUp = runOnce(() -> {
-                    double rps = mode.equals("HIGH") ? HIGHPOWER : (mode.equals("LOW") ? LOWPOWER : 0);
+                    double rps = getShooterRate();
                     Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
                     Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
                 });
@@ -73,15 +103,48 @@ public class Shooter extends SubsystemBase {
                 return spinUp.andThen(aimAndDrive).finallyDo((interrupted) -> stopShooter());
             });
         }
+
+        //LOW means passing
         else if (mode.equals("LOW"))
         {
-            return Commands.print("PASSING MODE");
+            return runOnce( () -> {
+                double rps = 10;
+                Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
+                Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+            });
+        }
+
+        //AUTO is for shooting during auto, aiming will be done by pathplanner
+        else if(mode.equals("AUTO"))
+        {
+            return runOnce( () -> {
+                double rps = getShooterRate();
+                Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
+                Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+                System.out.println("Shooter rps: " + rps);
+            });
         }
         else
         {
-            return Commands.print("SHOOTER OFF");
+            return runOnce(() -> {
+                stopShooter();
+            });
         }
         
+    }
+
+    //calls the map to get the estimated shooter rate for current position
+    public double getShooterRate()
+    {
+        Pose2d currPose = RobotContainer.drivetrain.getState().Pose;
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        final Translation2d hubPosition = (alliance.isPresent() && alliance.get() == Alliance.Red)
+            ? new Translation2d(11.911, 4.305)
+            : new Translation2d(4.627, 4.305);
+        
+        double distance = currPose.getTranslation().getDistance(hubPosition);
+        //we can just get from shooter map, it will automatically determine the value, even if it's not one we put in the table. It's very precise.
+        return shooterVelocitiesMap.get(distance);
     }
 
     public void stopShooter() {

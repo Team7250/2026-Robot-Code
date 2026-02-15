@@ -9,7 +9,9 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -75,6 +77,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+        configurePathPlannerEventTriggers();
         drivetrain.configurePathPlanner();
         SmartDashboard.putData(Telemetry.m_field);
         PathPlannerLogging.setLogTargetPoseCallback(Telemetry::setTargetPose);
@@ -170,7 +173,7 @@ public class RobotContainer {
                 .alongWith(stateMachine.SetState(4))
             );
             
-            //NOTHING
+            //INTAKE WHILE SHOOT
             xbox.rightBumper().onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(storage.storage("ON"))
@@ -237,7 +240,20 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
+    public void configurePathPlannerEventTriggers()
+    {
+        new EventTrigger("shoot").onTrue(
+            infeed.feed(.5)
+            .alongWith(shooter.shoot("AUTO"))
+        );
+        new EventTrigger("stopshoot").onTrue(Commands.print("Stopping shooter"));
+        new EventTrigger("climb").onTrue(Commands.print("Climbing"));
+        new EventTrigger("intake").onTrue(Commands.print("Intaking"));
+        new EventTrigger("stopintake").onTrue(Commands.print("Stopping intake"));
+        NamedCommands.registerCommand("stopshoot", Commands.print("Stopping Shooter"));
+    }
+
     public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto("New Auto");
+        return AutoBuilder.buildAuto("LeftAutoDepot");
     }
 }
