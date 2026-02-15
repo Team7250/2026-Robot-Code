@@ -172,7 +172,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
 
-        configurePathPlanner();
+        
     }
 
     /**
@@ -197,7 +197,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configurePathPlanner();
+        
     }
 
     /**
@@ -230,7 +230,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configurePathPlanner();
+        
     }
 
     public void updateVision() {

@@ -19,6 +19,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
     }
 
+    //this command is for testing intake
     public Command testIntake(double rotationVoltage, double position)
     {
         return runOnce(() -> {
@@ -29,16 +30,18 @@ public class Intake extends SubsystemBase {
         
     }
 
+    //actual intaking command
     public Command intake(boolean rotate, String raiselower) {
         return runOnce(() -> {
            
 
-            //if raiselower == true then it's going down
+            //raiselower is a string now, DOWN = down position
             if(raiselower == "DOWN")
             {
                 Robot.RaiseLower1.setControl(m_request.withPosition(LOW));
                 Robot.RaiseLower2.setControl(m_request.withPosition(-LOW));
             }
+            //UP = upper position
             else if (raiselower == "UP")
             {
                 Robot.RaiseLower1.setControl(m_request.withPosition(HIGH));
