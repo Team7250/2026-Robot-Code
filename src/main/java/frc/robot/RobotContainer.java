@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
@@ -32,7 +35,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
-import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.infeeder;
 
 public class RobotContainer {
@@ -69,9 +71,10 @@ public class RobotContainer {
     public static Shooter shooter = new Shooter();
     public static Climb climb = new Climb();
     public static StateMachine stateMachine = new StateMachine();
-    public static Storage storage = new Storage();
     public static infeeder infeed = new infeeder();
-
+    //Triggers
+    public static Trigger manualOverride = xbox.start();
+    public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -129,87 +132,96 @@ public class RobotContainer {
             //Climb: io (UP, DOWN)
             
             //REST
-            xbox.b().onTrue(
+            xbox.b().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UP")
-                .alongWith(storage.storage("OFF"))
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(0))
             );
             
             //TRANSITION
-            xbox.y().onTrue(
+            xbox.y().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
-                .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(2))
+                
             );
             
             //INTAKING
-            xbox.x().onTrue(
+            xbox.x().and(manualOverride.negate()).onTrue(
                 intake.intake(true, "DOWN")
-                .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(1))
+                
             );
             
             //SHOOTING
-            xbox.rightTrigger().onTrue(
+            xbox.rightTrigger().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
-                .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("HIGH"))
                 .alongWith(infeed.feed(1))
                 .alongWith(stateMachine.SetState(3))
+                
             );
             
             //PASSING
-            xbox.leftTrigger().onTrue(
+            xbox.leftTrigger().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
-                .alongWith(storage.storage("ON"))
                 .alongWith(shooter.shoot("LOW"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(4))
+                
             );
             
             //INTAKE WHILE SHOOT
-            xbox.rightBumper().onTrue(
-                intake.intake(false, "UNCHANGED")
-                .alongWith(storage.storage("ON"))
+            xbox.rightBumper().and(manualOverride.negate()).onTrue(
+                intake.intake(true, "DOWN")
                 .alongWith(shooter.shoot("HIGH"))
                 .alongWith(infeed.feed(1))
                 .alongWith(stateMachine.SetState(7))
+                
                 );
             
             //HOPPER MOVEMENT LOCK (manual override)
             xbox.leftBumper().onTrue(Commands.print("LB button pressed"));
             
             //CLIMB DOWN
-            xbox.povDown().onTrue(
+            xbox.povDown().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
-                .alongWith(storage.storage("OFF"))
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("DOWN"))
+                
             );
             
             //CLIMB UP
-            xbox.povUp().onTrue(
+            xbox.povUp().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
-                .alongWith(storage.storage("OFF"))
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("UP"))
+                
             );
 
+            //ORIENT SWITCH
             orientSwitch.onTrue(
                 Commands.runOnce(() -> {
                 fieldOrient = !fieldOrient;
                 System.out.println("Field Oriented: " + fieldOrient);
         })
+            );
+
+        //MANUAL OVERRIDE CONTROLS
+                    //INTAKING
+            xbox.x().and(manualOverride).onTrue(
+                intake.testRotate(1)                
+            );
+            leftStickMoved.and(manualOverride).whileTrue(
+                intake.testIntake(-xbox.getLeftY())
             );
 
         
@@ -246,10 +258,12 @@ public class RobotContainer {
             infeed.feed(.5)
             .alongWith(shooter.shoot("AUTO"))
         );
-        new EventTrigger("stopshoot").onTrue(Commands.print("Stopping shooter"));
+        new EventTrigger("stopshoot").onTrue(shooter.shoot("STOP").alongWith(
+            infeed.feed(0)
+        ));
         new EventTrigger("climb").onTrue(Commands.print("Climbing"));
-        new EventTrigger("intake").onTrue(Commands.print("Intaking"));
-        new EventTrigger("stopintake").onTrue(Commands.print("Stopping intake"));
+        new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
+        new EventTrigger("stopintake").onTrue(intake.intake(false, "UP"));
         NamedCommands.registerCommand("stopshoot", Commands.print("Stopping Shooter"));
     }
 

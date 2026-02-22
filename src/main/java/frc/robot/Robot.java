@@ -35,7 +35,6 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
-import frc.robot.subsystems.Storage;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -94,13 +93,14 @@ public class Robot extends TimedRobot {
     // Intake
     public static TalonFX RaiseLower1 = new TalonFX(17);
     public static TalonFX RaiseLower2 = new TalonFX(18);
-    public static SparkMax RotateIntake = new SparkMax(19, MotorType.kBrushless);
+    public static TalonFX RotateIntake = new TalonFX(19);
 
     // Storage
     public static TalonFX storage1 = new TalonFX(17);
 
     // Infeeder
     public static TalonFX feeder = new TalonFX(20);
+    public static TalonFX indexer = new TalonFX(21);
 
     // Controller Declarations
     public static Joystick joystick = new Joystick(0); // Patrick
@@ -153,8 +153,7 @@ public class Robot extends TimedRobot {
         configureMotors(RaiseLower1, 80, 160, 1600);
         configureMotors(RaiseLower2, 80, 160, 1600);
         RaiseLower2.setControl(new StrictFollower(17));
-        SparkMaxConfig config = new SparkMaxConfig();
-        RotateIntake.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        configureMotors(RotateIntake, 80, 160, 1600);
 
         
         
@@ -164,6 +163,10 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
+
+        SmartDashboard.putString("Drivetrain Command", 
+        RobotContainer.drivetrain.getCurrentCommand() != null ? 
+        RobotContainer.drivetrain.getCurrentCommand().getName() : "none");
 
         //LED Pattern apply
         redpattern.applyTo(m_ledBuffer);

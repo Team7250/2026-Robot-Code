@@ -100,7 +100,10 @@ public class Shooter extends SubsystemBase {
                     Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
                 });
 
-                return spinUp.andThen(aimAndDrive).finallyDo((interrupted) -> stopShooter());
+                return spinUp.andThen(aimAndDrive).finallyDo((interrupted) -> {
+                    System.out.println("Shoot command ended, interrupted=" + interrupted);
+                    stopShooter();
+                });
             });
         }
 

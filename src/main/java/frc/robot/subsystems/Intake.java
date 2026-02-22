@@ -20,19 +20,29 @@ public class Intake extends SubsystemBase {
     }
 
     //this command is for testing intake
-    public Command testIntake(double rotationVoltage, double position)
+    public Command testIntake(double position)
     {
         return runOnce(() -> {
             Robot.RaiseLower1.setControl(m_request.withPosition(position));
             Robot.RaiseLower2.setControl(m_request.withPosition(position));
-            Robot.RotateIntake.set(rotationVoltage);
+            System.out.println("testintake ran");
         });
-        
+    }
+
+    public Command testRotate(double rotationVoltage)
+    {
+        return runOnce(() -> {
+            Robot.RotateIntake.set(rotationVoltage);
+            System.out.println("testrotate ran");
+        });
     }
 
     //actual intaking command
-    public Command intake(boolean rotate, String raiselower) {
-        return runOnce(() -> {
+        public Command intake(boolean rotate, String raiselower) {
+            return runOnce(() -> {
+                System.out.println("INTAKE COMMAND RUNNING");
+
+            
            
 
             //raiselower is a string now, DOWN = down position
