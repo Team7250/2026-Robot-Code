@@ -36,6 +36,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.infeeder;
+import frc.robot.subsystems.LEDSubsystem;
 
 public class RobotContainer {
     public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -72,6 +73,8 @@ public class RobotContainer {
     public static Climb climb = new Climb();
     public static StateMachine stateMachine = new StateMachine();
     public static infeeder infeed = new infeeder();
+    public static LEDSubsystem ledSubsystem = new LEDSubsystem();
+
     //Triggers
     public static Trigger manualOverride = xbox.start();
     public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
@@ -137,6 +140,7 @@ public class RobotContainer {
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(0))
+                .alongWith(ledSubsystem.runPattern("REST"))
             );
             
             //TRANSITION
@@ -145,7 +149,7 @@ public class RobotContainer {
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(2))
-                
+                .alongWith(ledSubsystem.runPattern("REST"))
             );
             
             //INTAKING
@@ -154,7 +158,7 @@ public class RobotContainer {
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(1))
-                
+                .alongWith(ledSubsystem.runPattern("INTAKE"))
             );
             
             //SHOOTING
@@ -163,7 +167,7 @@ public class RobotContainer {
                 .alongWith(shooter.shoot("HIGH"))
                 .alongWith(infeed.feed(1))
                 .alongWith(stateMachine.SetState(3))
-                
+                .alongWith(ledSubsystem.runPattern("SHOOT"))
             );
             
             //PASSING
@@ -172,7 +176,7 @@ public class RobotContainer {
                 .alongWith(shooter.shoot("LOW"))
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(4))
-                
+                .alongWith(ledSubsystem.runPattern("PASS"))
             );
             
             //INTAKE WHILE SHOOT
@@ -181,7 +185,7 @@ public class RobotContainer {
                 .alongWith(shooter.shoot("HIGH"))
                 .alongWith(infeed.feed(1))
                 .alongWith(stateMachine.SetState(7))
-                
+                .alongWith(ledSubsystem.runPattern("SHOOT"))
                 );
             
             //HOPPER MOVEMENT LOCK (manual override)
@@ -194,7 +198,7 @@ public class RobotContainer {
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("DOWN"))
-                
+                .alongWith(ledSubsystem.runPattern("CLIMB"))
             );
             
             //CLIMB UP
@@ -204,7 +208,7 @@ public class RobotContainer {
                 .alongWith(infeed.feed(0))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("UP"))
-                
+                .alongWith(ledSubsystem.runPattern("CLIMB"))
             );
 
             //ORIENT SWITCH

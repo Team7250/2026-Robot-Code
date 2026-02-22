@@ -35,10 +35,9 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.LEDSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class Robot extends TimedRobot {
 
@@ -117,15 +116,7 @@ public class Robot extends TimedRobot {
 
     // debounce
     private boolean cmdDebounce = false;
-
-    AddressableLED m_led = new AddressableLED(9);
-    AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(10);
-
-    //LED Patterns
-    LEDPattern redpattern = LEDPattern.solid(Color.kRed);
-    LEDPattern gradpattern = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kTomato, Color.kAqua);
-
-    
+   
 
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
@@ -135,12 +126,6 @@ public class Robot extends TimedRobot {
     public Robot() {
         m_robotContainer = new RobotContainer();
 
-        //LED
-        m_ledBuffer = new AddressableLEDBuffer(60);
-        m_led.setLength(m_ledBuffer.getLength());
-
-        m_led.setData(m_ledBuffer);
-        m_led.start();
 
         //Motors
 
@@ -163,15 +148,11 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
-
+        
         SmartDashboard.putString("Drivetrain Command", 
         RobotContainer.drivetrain.getCurrentCommand() != null ? 
         RobotContainer.drivetrain.getCurrentCommand().getName() : "none");
 
-        //LED Pattern apply
-        redpattern.applyTo(m_ledBuffer);
-        m_led.setData(m_ledBuffer);
-        
         Pose2d pose = RobotContainer.drivetrain.getState().Pose;
         ChassisSpeeds speeds = RobotContainer.drivetrain.getState().Speeds;
 
@@ -189,7 +170,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        RobotContainer.ledSubsystem.off();
+        }
 
     @Override
     public void disabledPeriodic() {}
@@ -204,10 +187,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
-    }
-
-    public void testFunction(){
-        System.out.println("Hi");
     }
 
     @Override
