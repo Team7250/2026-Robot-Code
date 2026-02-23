@@ -74,6 +74,7 @@ public class RobotContainer {
     public static StateMachine stateMachine = new StateMachine();
     public static infeeder infeed = new infeeder();
     public static LEDSubsystem ledSubsystem = new LEDSubsystem();
+    public static int ClimbPercent = 0;
 
     //Triggers
     public static Trigger manualOverride = xbox.start();
@@ -221,11 +222,21 @@ public class RobotContainer {
 
         //MANUAL OVERRIDE CONTROLS
                     //INTAKING
-            xbox.x().and(manualOverride).onTrue(
+            xbox.povRight().and(manualOverride).onTrue(
                 intake.testRotate(1)                
+            );
+            xbox.povLeft().and(manualOverride).onTrue(
+                intake.testRotate(-1)                
             );
             leftStickMoved.and(manualOverride).whileTrue(
                 intake.testIntake(-xbox.getLeftY())
+            );
+                    //CLIMB
+            xbox.povUp().and(manualOverride).onTrue(
+                climb.testClimbVoltage(1)              
+            );
+            xbox.povDown().and(manualOverride).onTrue(
+                climb.testClimbVoltage(-1)              
             );
 
         
@@ -267,8 +278,8 @@ public class RobotContainer {
         ));
         new EventTrigger("climb").onTrue(Commands.print("Climbing"));
         new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
-        new EventTrigger("stopintake").onTrue(intake.intake(false, "UP"));
-        NamedCommands.registerCommand("stopshoot", Commands.print("Stopping Shooter"));
+        new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
+        NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
     }
 
     public Command getAutonomousCommand() {

@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class Climb extends SubsystemBase {
     
@@ -36,18 +37,25 @@ public class Climb extends SubsystemBase {
     public Command climb(String io) {
         return runOnce(
             () -> {
-                
+                System.out.println("something that makes sense");
                 switch (io) {
-                    case "up":
+                    case "UP":
                         Robot.climb1.setControl(m_request.withPosition(UPPOSITION));
                         Robot.climb2.setControl(m_request.withPosition(UPPOSITION));
-                    case "down":
+                        RobotContainer.ClimbPercent = 1;
+                        break;
+                    case "DOWN":
                         Robot.climb1.setControl(m_request.withPosition(DOWNPOSITION));
                         Robot.climb2.setControl(m_request.withPosition(DOWNPOSITION));
+                        RobotContainer.ClimbPercent = -1;
+                        break;
                     default:
                         Robot.climb1.set(0);
                         Robot.climb2.set(0);
+                        RobotContainer.ClimbPercent = 0;
+                        break;
                 }
+                System.out.println(RobotContainer.ClimbPercent);
             }
         );
     }

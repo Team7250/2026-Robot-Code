@@ -21,6 +21,7 @@ public class Shooter extends SubsystemBase {
 
     //create a map for smooth velocity scaling
     private final InterpolatingDoubleTreeMap shooterVelocitiesMap = new InterpolatingDoubleTreeMap();
+    public static double shootspeed;
 
     public Shooter() {
         //we add our keys in the format of distance (meters), velocity (rotations per second)
@@ -90,7 +91,8 @@ public class Shooter extends SubsystemBase {
                     double rps = getShooterRate();
                     Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
                     Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
-                    
+                    shootspeed = rps;
+
                 }, RobotContainer.drivetrain);
 
                 // Shooter Motor Command
