@@ -1,0 +1,93 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.0394454382826472,
+        "y": 5.9577101967799635
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.653507957414681,
+        "y": 6.463479573051269
+      },
+      "isLocked": false,
+      "linkedName": "Endpoint3LeftAuto"
+    },
+    {
+      "anchor": {
+        "x": 3.5732667617689007,
+        "y": 7.302011412268189
+      },
+      "prevControl": {
+        "x": 3.325869773394184,
+        "y": 7.266029053491693
+      },
+      "nextControl": {
+        "x": 4.281634742923589,
+        "y": 7.4050391451890265
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.811654778887304,
+        "y": 7.340827389443652
+      },
+      "prevControl": {
+        "x": 5.089703784911556,
+        "y": 7.458729282665325
+      },
+      "nextControl": {
+        "x": 6.058386241049236,
+        "y": 7.300533648249329
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.648944365192582,
+        "y": 6.150470756062767
+      },
+      "prevControl": {
+        "x": 6.635029300026031,
+        "y": 7.0502082611166506
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake",
+      "waypointRelativePos": 2.3490028490028445,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 139.6858998395027
+  },
+  "reversed": false,
+  "folder": "LeftAutoDepot",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -36.81219798809548
+  },
+  "useDefaultConstraints": true
+}

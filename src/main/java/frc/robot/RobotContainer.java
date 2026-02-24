@@ -266,12 +266,14 @@ public class RobotContainer {
     public void configurePathPlannerEventTriggers()
     {
         new EventTrigger("shoot").onTrue(
-            infeed.feed(.5)
-            .alongWith(shooter.shoot("AUTO"))
+            Commands.print("Shooting")/*.alongWith(
+            infeed.feed(.5))
+            .alongWith(shooter.shoot("AUTO"))*/
         );
-        new EventTrigger("stopshoot").onTrue(shooter.shoot("STOP").alongWith(
+        new EventTrigger("stopshoot").onTrue(Commands.print("Stopping Shooter")/*shooter.shoot("STOP").alongWith(
             infeed.feed(0)
-        ));
+        )*/
+        );
         new EventTrigger("climb").onTrue(Commands.print("Climbing"));
         new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
         new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
