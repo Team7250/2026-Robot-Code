@@ -133,21 +133,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Drivetrain Command", 
         RobotContainer.drivetrain.getCurrentCommand() != null ? 
         RobotContainer.drivetrain.getCurrentCommand().getName() : "none");
-
-        Pose2d pose = RobotContainer.drivetrain.getState().Pose;
-        ChassisSpeeds speeds = RobotContainer.drivetrain.getState().Speeds;
-
-        SmartDashboard.putNumberArray("DriveState/PoseArray", new double[] {
-            pose.getX(),
-            pose.getY(),
-            pose.getRotation().getRadians()
-        });
-
-        SmartDashboard.putNumberArray("DriveState/SpeedsArray", new double[] {
-            speeds.vxMetersPerSecond,
-            speeds.vyMetersPerSecond,
-            speeds.omegaRadiansPerSecond
-        });
     }
 
     @Override
