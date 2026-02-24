@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ActivateLEDs"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "StartingPointAndShootCommand"
