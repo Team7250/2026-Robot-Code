@@ -15,6 +15,7 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -72,6 +73,8 @@ public class RobotContainer {
     public static LEDSubsystem ledSubsystem = new LEDSubsystem();
     public static int ClimbPercent = 0;
 
+    public final SendableChooser<Command> chooser;
+
     //Triggers
     public static Trigger manualOverride = xbox.start();
     public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
@@ -84,6 +87,14 @@ public class RobotContainer {
         drivetrain.configurePathPlanner();
         SmartDashboard.putData(Telemetry.m_field);
         PathPlannerLogging.setLogTargetPoseCallback(Telemetry::setTargetPose);
+        chooser = new SendableChooser<>();
+        
+        chooser.setDefaultOption("None", null);
+        chooser.addOption("Left", AutoBuilder.buildAuto("LeftAutoDepot"));
+        chooser.addOption("Right", AutoBuilder.buildAuto("RightAutoShoot"));
+        chooser.addOption("Center", AutoBuilder.buildAuto("CenterAutoClimb"));
+        
+        SmartDashboard.putData("Auto", chooser);
     }
 
     private void configureBindings() {
@@ -281,6 +292,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto("LeftAutoDepot");
+        return chooser.getSelected();
     }
 }
