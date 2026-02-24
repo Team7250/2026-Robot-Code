@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static final int kPort = 9;
+  private static final int kPort = 0;
   private static final int kLength = 150;
 
   private final int brightness = 40;
