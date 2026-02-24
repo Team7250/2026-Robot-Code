@@ -101,7 +101,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
                 double reduction = (-joystick.getRawAxis(3) + 1) / 2;
-                
+                SmartDashboard.putNumber("Speed %", reduction);
 
                 if (fieldOrient)
                 {
