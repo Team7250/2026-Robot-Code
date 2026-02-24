@@ -28,6 +28,7 @@ public class LEDSubsystem extends SubsystemBase {
   private final LEDPattern restpattern = LEDPattern.solid(Color.kPurple).breathe(Seconds.of(5)).atBrightness(Percent.of(brightness));
   private final LEDPattern passpattern = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kPeru, Color.kRed).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(5), Feet.of(8.2/150));
   private final LEDPattern intakepattern = LEDPattern.steps(Map.of(0, Color.kBlack, 0.25, Color.kYellow, 0.5, Color.kYellow, 0.75, Color.kBlack)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(5), Feet.of(8.2/150));
+  private final LEDPattern autopattern = LEDPattern.rainbow(255, brightness * 2).scrollAtAbsoluteSpeed(FeetPerSecond.of(5), Feet.of(8.2/150));
   public LEDSubsystem() {
     m_led = new AddressableLED(kPort);
     m_buffer = new AddressableLEDBuffer(kLength);
@@ -72,6 +73,9 @@ public class LEDSubsystem extends SubsystemBase {
     .atBrightness(Percent.of(brightness))
     .scrollAtAbsoluteSpeed(FeetPerSecond.of(RobotContainer.ClimbPercent * 5), Feet.of(8.2 / 150))
     .applyTo(m_buffer);  });
+    }
+    else if(pattern == "AUTO"){
+      return run(() -> autopattern.applyTo(m_buffer));
     }
     else {
       return run(() -> blank.applyTo(m_buffer));

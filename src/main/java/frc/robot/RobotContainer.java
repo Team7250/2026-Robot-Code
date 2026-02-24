@@ -289,6 +289,7 @@ public class RobotContainer {
         new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
         new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
         NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
+        NamedCommands.registerCommand("ActivateLEDs", ledSubsystem.runPattern("AUTO"));
     }
 
     public Command getAutonomousCommand() {
