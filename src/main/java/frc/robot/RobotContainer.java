@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Set;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -85,12 +86,13 @@ public class RobotContainer {
         configureBindings();
         configurePathPlannerEventTriggers();
         drivetrain.configurePathPlanner();
+        System.out.println("AutoBuilder Configured: " + AutoBuilder.isConfigured());
         SmartDashboard.putData(Telemetry.m_field);
         PathPlannerLogging.setLogTargetPoseCallback(Telemetry::setTargetPose);
         chooser = new SendableChooser<>();
         
-        chooser.setDefaultOption("None", null);
-        chooser.addOption("Left", AutoBuilder.buildAuto("LeftAutoDepot"));
+        chooser.setDefaultOption("None", Commands.none());
+        chooser.addOption("Left", Commands.defer(() -> AutoBuilder.buildAuto("LeftAutoDepot"), Set.of(drivetrain)));
         chooser.addOption("Right", AutoBuilder.buildAuto("RightAutoShoot"));
         chooser.addOption("Center", AutoBuilder.buildAuto("CenterAutoClimb"));
         
@@ -285,11 +287,12 @@ public class RobotContainer {
             infeed.feed(0)
         )*/
         );
+        NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
+        NamedCommands.registerCommand("ActivateLEDs", Commands.print("enabling leds"));
+        NamedCommands.registerCommand("climb", climb.climb("UP"));
         new EventTrigger("climb").onTrue(Commands.print("Climbing"));
         new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
         new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
-        NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
-        NamedCommands.registerCommand("ActivateLEDs", ledSubsystem.runPattern("AUTO"));
     }
 
     public Command getAutonomousCommand() {
