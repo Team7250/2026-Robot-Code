@@ -49,11 +49,12 @@ public class Robot extends TimedRobot {
      *  1: 15
      *  2: 16
      * INTAKE:
-     *  RaiseLower1: 17
-     *  RaiseLower2: 18
+     *  RaiseLower1: 17 (Right Arm)
+     *  RaiseLower2: 18 (Left Arm)
      *  Rotate: 19
      * INFEEDER
      *  feeder: 20
+     *  indexer: 21
      */
 
     //CANIVORE

@@ -108,16 +108,16 @@ public class RobotContainer {
                 if (fieldOrient)
                 {
                     return drive
-                    .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
-                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
-                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                    .withVelocityX(joystick.getRawAxis(1) * MaxSpeed * reduction)
+                    .withVelocityY(joystick.getRawAxis(0) * MaxSpeed * reduction)
+                    .withRotationalRate(joystick.getRawAxis(2) * MaxAngularRate * reduction);
                 }
                 else
                 {
                     return rcdrive
-                    .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
-                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
-                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                    .withVelocityX(joystick.getRawAxis(1) * MaxSpeed * reduction)
+                    .withVelocityY(joystick.getRawAxis(0) * MaxSpeed * reduction)
+                    .withRotationalRate(joystick.getRawAxis(2) * MaxAngularRate * reduction);
                 }
                 
             })
