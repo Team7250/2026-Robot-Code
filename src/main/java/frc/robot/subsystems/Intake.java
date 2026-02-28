@@ -8,7 +8,7 @@ import frc.robot.Robot;
 
 public class Intake extends SubsystemBase {
 
-    double LOW = 30;
+    double LOW = 14;
     double HIGH = 0;
      //use motion magic to control the position
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
@@ -24,8 +24,16 @@ public class Intake extends SubsystemBase {
     {
         return runOnce(() -> {
             Robot.RaiseLower1.setControl(m_request.withPosition(position));
-            Robot.RaiseLower2.setControl(m_request.withPosition(position));
             System.out.println("testintake ran");
+        });
+    }
+
+    //this command is for testing intake
+    public Command testIntakePower(double power)
+    {
+        return runOnce(() -> {
+            Robot.RaiseLower1.set(power);
+            System.out.println("Encoder pos: " + Robot.RaiseLower1.getPosition().getValueAsDouble());
         });
     }
 
@@ -34,6 +42,14 @@ public class Intake extends SubsystemBase {
         return runOnce(() -> {
             Robot.RotateIntake.set(rotationVoltage);
             System.out.println("testrotate ran");
+        });
+    }
+
+    public Command testBoth(double rotationVoltage, double position)
+    {
+        return runOnce(() -> {
+            Robot.RaiseLower1.setControl(m_request.withPosition(position));
+            Robot.RotateIntake.set(rotationVoltage);
         });
     }
 
@@ -49,13 +65,11 @@ public class Intake extends SubsystemBase {
             if(raiselower == "DOWN")
             {
                 Robot.RaiseLower1.setControl(m_request.withPosition(LOW));
-                Robot.RaiseLower2.setControl(m_request.withPosition(-LOW));
             }
             //UP = upper position
             else if (raiselower == "UP")
             {
                 Robot.RaiseLower1.setControl(m_request.withPosition(HIGH));
-                Robot.RaiseLower2.setControl(m_request.withPosition(-HIGH));
             }
 
             //we can turn off the roller immediately

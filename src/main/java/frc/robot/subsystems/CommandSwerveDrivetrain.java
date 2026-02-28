@@ -324,7 +324,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        updateVision();
+        //updateVision();
     }
 
     private void startSimThread() {

@@ -8,6 +8,10 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Set;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -97,6 +101,10 @@ public class RobotContainer {
         chooser.addOption("Center", AutoBuilder.buildAuto("CenterAutoClimb"));
         
         SmartDashboard.putData("Auto", chooser);
+        
+
+        var followerControl = new Follower(Robot.RaiseLower1.getDeviceID(), MotorAlignmentValue.Opposed);
+        Robot.RaiseLower2.setControl(followerControl);
     }
 
     private void configureBindings() {
@@ -110,14 +118,14 @@ public class RobotContainer {
                     return drive
                     .withVelocityX(joystick.getRawAxis(1) * MaxSpeed * reduction)
                     .withVelocityY(joystick.getRawAxis(0) * MaxSpeed * reduction)
-                    .withRotationalRate(joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
                 }
                 else
                 {
                     return rcdrive
                     .withVelocityX(joystick.getRawAxis(1) * MaxSpeed * reduction)
                     .withVelocityY(joystick.getRawAxis(0) * MaxSpeed * reduction)
-                    .withRotationalRate(joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
                 }
                 
             })
@@ -143,6 +151,7 @@ public class RobotContainer {
             //Shooter: mode (HIGH, LOW, or OFF)
             //StateMachine: stateId (int)
             //Climb: io (UP, DOWN)
+        /*
             
             //REST
             xbox.b().and(manualOverride.negate()).onTrue(
@@ -247,6 +256,10 @@ public class RobotContainer {
             xbox.povDown().and(manualOverride).onTrue(
                 climb.testClimbVoltage(-1)              
             );
+
+        */
+            xbox.povUp().onTrue(intake.testBoth(0,0));
+            xbox.povDown().onTrue(intake.testBoth(-.75, 14).alongWith(ledSubsystem.runPattern("AUTO")));
 
         
 

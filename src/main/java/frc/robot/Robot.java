@@ -6,9 +6,13 @@ package frc.robot;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.HootAutoReplay;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.StrictFollower;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -109,18 +113,23 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
 
 
+        //s = .25
+        //v = .12
+        //a = .01
+        //p = 4.8
+        //i = 0
+        //d = .1
         //Motors
 
-        configureMotors(climb1, 80, 160, 1600);
-        configureMotors(climb2, 80, 160, 1600);
+        configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
+        configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
 
-        configureMotors(shooter1, 80, 160, 1600);
-        configureMotors(shooter2, 80, 160, 1600);
+        configureMotors(shooter1, 80, 160, 1600, true, false, 40, 0.05, 0.015, 0.01, 0.8, 0.2, 0);
+        configureMotors(shooter2, 80, 160, 1600, false, false, 40, 0.05, 0.015, 0.01, 0.8, 0.2, 0);
 
-        configureMotors(RaiseLower1, 80, 160, 1600);
-        configureMotors(RaiseLower2, 80, 160, 1600);
-        RaiseLower2.setControl(new StrictFollower(17));
-        configureMotors(RotateIntake, 80, 160, 1600);
+        configureMotors(RaiseLower1, 512, 256, 256, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower2, 512, 256, 256, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RotateIntake, 80, 160, 1600, false, false, 40, .25, .12, .01, 4.8, 0, .1);
 
         
         
@@ -201,16 +210,23 @@ public class Robot extends TimedRobot {
         
     }
 
-    public void configureMotors(TalonFX motor, int v, int a, int j) {
+    public void configureMotors(TalonFX motor, double v, double a, double j, boolean inverted, boolean brakeMode, double currentLimit, double ks, double kv, double ka, double kp, double ki, double kd) {
         TalonFXConfiguration TalonFXConfigs = new TalonFXConfiguration();
         TalonFXConfigs.Slot0
-            .withKS(0.25) // Add 0.25V output to overcome static friction
-            .withKV(.12)  // Velocity target of 1 rps results in 0.12V output
-            .withKA(.01)  // Acceleration of 1 rps requires 0.01V output
-            .withKP(4.8)  // Position error of 2.5 rots results in 12V output
-            .withKI(0)    // No output for integrated error
-            .withKD(0.1); // Velocity error of 1 rps results in 0.1V output
+            .withKS(ks) // Add 0.25V output to overcome static friction
+            .withKV(kv)  // Velocity target of 1 rps results in 0.12V output
+            .withKA(ka)  // Acceleration of 1 rps requires 0.01V output
+            .withKP(kp)  // Position error of 2.5 rots results in 12V output
+            .withKI(ki)    // No output for integrated error
+            .withKD(kd); // Velocity error of 1 rps results in 0.1V output
         
+        //s = .25
+        //v = .12
+        //a = .01
+        //p = 4.8
+        //i = 0
+        //d = .1
+
         // MotionMagicConfigs mmc = TalonFXConfigs.MotionMagic;
         // mmc.MotionMagicCruiseVelocity = 80; // Cruise velocity of 80 rps
         // mmc.MotionMagicAcceleration = 160; // Acceleration of 160 rps (.5 seconds)
@@ -222,6 +238,34 @@ public class Robot extends TimedRobot {
             .withMotionMagicJerk(j);
         // Default is 80-160-1600. Adjust as needed.
 
+        MotorOutputConfigs mconfigs = new MotorOutputConfigs();
+
+        if(inverted)
+        {
+            mconfigs.Inverted = InvertedValue.Clockwise_Positive;
+        }
+        else
+        {
+            mconfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+        }
+        
+        if(brakeMode)
+        {
+            mconfigs.NeutralMode = NeutralModeValue.Brake;
+        }
+        else
+        {
+            mconfigs.NeutralMode = NeutralModeValue.Coast;
+        }
+
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.StatorCurrentLimit = currentLimit;
+        currentLimitsConfigs.StatorCurrentLimitEnable = true;
+
+        motor.setPosition(0);
+
         motor.getConfigurator().apply(TalonFXConfigs);
+        motor.getConfigurator().apply(mconfigs);
+        motor.getConfigurator().apply(currentLimitsConfigs);
     }
 }
