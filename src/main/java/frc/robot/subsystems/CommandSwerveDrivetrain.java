@@ -89,7 +89,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     );
 
     public void configurePathPlanner(){
-        System.out.println("\n\n\n\n\n\n\n\n\nConfiguring pathplanner...\n\n\n\n\n\n");
 
         /* Load the RobotConfig from the PathPlanner GUI settings */
         RobotConfig config;
@@ -268,6 +267,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
                 // 3. Add the measurement to the CTRE Pose Estimator
                 this.addVisionMeasurement(result.pose, result.timestampSeconds);
+                System.out.println("added a vision measurement");
             }
         }
     }
@@ -324,7 +324,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        //updateVision();
+        updateVision();
     }
 
     private void startSimThread() {

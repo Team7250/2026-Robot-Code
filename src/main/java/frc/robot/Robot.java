@@ -68,8 +68,8 @@ public class Robot extends TimedRobot {
     public Pigeon2 gyro = new Pigeon2(12);
 
     // Climb
-    public static TalonFX climb1 = new TalonFX(13);
-    public static TalonFX climb2 = new TalonFX(14);
+    //public static TalonFX climb1 = new TalonFX(13);
+    //public static TalonFX climb2 = new TalonFX(14);
 
     // Shooter
     public static TalonFX shooter1 = new TalonFX(15);
@@ -101,7 +101,6 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
 
     // debounce
-    private boolean cmdDebounce = false;
    
 
     /* log and replay timestamp and joystick data */
@@ -121,14 +120,14 @@ public class Robot extends TimedRobot {
         //d = .1
         //Motors
 
-        configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
-        configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
+        //configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
+        //configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
 
-        configureMotors(shooter1, 80, 160, 1600, true, false, 40, 0.05, 0.015, 0.01, 0.8, 0.2, 0);
-        configureMotors(shooter2, 80, 160, 1600, false, false, 40, 0.05, 0.015, 0.01, 0.8, 0.2, 0);
+        configureMotors(shooter1, 0, 200, 0, true, false, 40, 0.02, 0.0092, 0.0, 0.05, 0.001, 0.0);
+        configureMotors(shooter2, 0, 200, 0, false, false, 40, 0.015, 0.0092, 0.0, 0.05, 0.005, 0.0);
 
-        configureMotors(RaiseLower1, 512, 256, 256, false, true, 40, .25, .12, .01, 4.8, 0, .1);
-        configureMotors(RaiseLower2, 512, 256, 256, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower1, 16, 4, 1, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower2, 16, 4, 1, false, true, 40, .25, .12, .01, 4.8, 0, .1);
         configureMotors(RotateIntake, 80, 160, 1600, false, false, 40, .25, .12, .01, 4.8, 0, .1);
 
         
@@ -137,17 +136,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        m_timeAndJoystickReplay.update();
+        //m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
         
-        SmartDashboard.putString("Drivetrain Command", 
-        RobotContainer.drivetrain.getCurrentCommand() != null ? 
-        RobotContainer.drivetrain.getCurrentCommand().getName() : "none");
+        //SmartDashboard.putString("Drivetrain Command", 
+        //RobotContainer.drivetrain.getCurrentCommand() != null ? 
+        //RobotContainer.drivetrain.getCurrentCommand().getName() : "none");
     }
 
     @Override
     public void disabledInit() {
-        RobotContainer.ledSubsystem.off();
+        //RobotContainer.ledSubsystem.off();
         }
 
     @Override
@@ -175,14 +174,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
-        }
-
-        // joystick button command bindings 
-        if (cmdDebounce == false) {
-
-            
-            
-            cmdDebounce = true;
         }
     }
 

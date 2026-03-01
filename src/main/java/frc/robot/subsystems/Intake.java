@@ -24,7 +24,6 @@ public class Intake extends SubsystemBase {
     {
         return runOnce(() -> {
             Robot.RaiseLower1.setControl(m_request.withPosition(position));
-            System.out.println("testintake ran");
         });
     }
 
@@ -33,7 +32,6 @@ public class Intake extends SubsystemBase {
     {
         return runOnce(() -> {
             Robot.RaiseLower1.set(power);
-            System.out.println("Encoder pos: " + Robot.RaiseLower1.getPosition().getValueAsDouble());
         });
     }
 
@@ -41,7 +39,6 @@ public class Intake extends SubsystemBase {
     {
         return runOnce(() -> {
             Robot.RotateIntake.set(rotationVoltage);
-            System.out.println("testrotate ran");
         });
     }
 
@@ -56,7 +53,6 @@ public class Intake extends SubsystemBase {
     //actual intaking command
         public Command intake(boolean rotate, String raiselower) {
             return runOnce(() -> {
-                System.out.println("INTAKE COMMAND RUNNING");
 
             
            

@@ -17,7 +17,7 @@ public class Climb extends SubsystemBase {
     String io;
     public Climb() {
     }
-
+    /*
     //test functions for climb, one for positional and one for voltage
     public Command testClimb(double position)
     {
@@ -37,7 +37,6 @@ public class Climb extends SubsystemBase {
     public Command climb(String io) {
         return runOnce(
             () -> {
-                System.out.println("something that makes sense");
                 switch (io) {
                     case "UP":
                         Robot.climb1.setControl(m_request.withPosition(UPPOSITION));
@@ -58,5 +57,5 @@ public class Climb extends SubsystemBase {
                 System.out.println(RobotContainer.ClimbPercent);
             }
         );
-    }
+    }*/
 }

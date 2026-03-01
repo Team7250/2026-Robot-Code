@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static final int kPort = 0;
-  private static final int kLength = 150;
+  private static final int kPort = 1;
+  private static final int kLength = 20;
 
   private final int brightness = 40;
   private final AddressableLED m_led;
@@ -38,15 +38,12 @@ public class LEDSubsystem extends SubsystemBase {
     // Set the default command to turn the strip off, otherwise the last colors written by
     // the last command to run will continue to be displayed.
     // Note: Other default patterns could be used instead!
-    setDefaultCommand(runPattern("REST"));
+    setDefaultCommand(runPattern("AUTO"));
   }
 
   @Override
   public void periodic() {
-  
-    // Periodically send the latest LED color data to the LED strip for it to display
     m_led.setData(m_buffer);
-    
   }
 
   /**
@@ -55,10 +52,10 @@ public class LEDSubsystem extends SubsystemBase {
    * @param pattern the LED pattern to run
    */
   public Command runPattern(String pattern) {
-    if (pattern == "SHOOT") {
-      return run(() -> {LEDPattern.steps(Map.of(0, Color.kDarkGreen, 0.5, Color.kWhite)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(Shooter.shootspeed / 30), Feet.of(8.2/150)).applyTo(m_buffer);});
+    /*if (pattern == "SHOOT") {
+      //return run(() -> {LEDPattern.steps(Map.of(0, Color.kDarkGreen, 0.5, Color.kWhite)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(Shooter.shootspeed / 30), Feet.of(8.2/150)).applyTo(m_buffer);});
     }
-    else if (pattern == "REST") {
+    else*/ if (pattern == "REST") {
       return run(() -> restpattern.applyTo(m_buffer));
     }
     else if (pattern == "PASS") {
@@ -67,15 +64,17 @@ public class LEDSubsystem extends SubsystemBase {
     else if (pattern == "INTAKE") {
       return run(() -> intakepattern.applyTo(m_buffer));
     }
-    else if (pattern == "CLIMB") {
+    /*else if (pattern == "CLIMB") {
       return run(() -> {
         LEDPattern.steps(Map.of(0, Color.kWhite, 0.5, Color.kBlue))
     .atBrightness(Percent.of(brightness))
     .scrollAtAbsoluteSpeed(FeetPerSecond.of(RobotContainer.ClimbPercent * 5), Feet.of(8.2 / 150))
     .applyTo(m_buffer);  });
-    }
-    else if(pattern == "AUTO"){
-      return run(() -> autopattern.applyTo(m_buffer));
+    }*/
+    else if(pattern.equals("AUTO")){
+      return run(() -> {
+        autopattern.applyTo(m_buffer);
+      });
     }
     else {
       return run(() -> blank.applyTo(m_buffer));

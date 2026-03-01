@@ -1,7 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.Optional;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,27 +18,23 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
 
     //create a map for smooth velocity scaling
-    private final InterpolatingDoubleTreeMap shooterVelocitiesMap = new InterpolatingDoubleTreeMap();
+    private static InterpolatingDoubleTreeMap shooterVelocitiesMap = new InterpolatingDoubleTreeMap();
     public static double shootspeed;
 
     public Shooter() {
         //we add our keys in the format of distance (meters), velocity (rotations per second)
-        shooterVelocitiesMap.put(0.5, 10.0);
-        shooterVelocitiesMap.put(1.0, 20.0);
-        shooterVelocitiesMap.put(1.5, 30.0);
-        shooterVelocitiesMap.put(2.0, 40.0);
-        shooterVelocitiesMap.put(2.5, 50.0);
-        shooterVelocitiesMap.put(3.0, 60.0);
-        shooterVelocitiesMap.put(3.5, 70.0);
-        shooterVelocitiesMap.put(4.0, 80.0);
-        shooterVelocitiesMap.put(4.5, 90.0);
-        shooterVelocitiesMap.put(5.0, 100.0);
+        shooterVelocitiesMap.put(1.9304, 45.0);
+        shooterVelocitiesMap.put(2.3876, 48.0);
+        shooterVelocitiesMap.put(3.6576, 55.0);
+        
+        
     }
     //we'll have to tune this when robot is ready
     private final edu.wpi.first.math.controller.PIDController headingPID = 
@@ -43,8 +44,8 @@ public class Shooter extends SubsystemBase {
     public Command testShooters(double rps)
     {
         return runOnce(() -> {
-            Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
-            Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+            Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
+            Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
         });
     }
 
@@ -69,7 +70,7 @@ public class Shooter extends SubsystemBase {
                     Pose2d currentPose = RobotContainer.drivetrain.getState().Pose;
                     
                     // MATH: Calculate angle to hub
-                    Rotation2d targetAngle = hubPosition.minus(currentPose.getTranslation()).getAngle();
+                    Rotation2d targetAngle = hubPosition.minus(currentPose.getTranslation()).getAngle();//.plus(Rotation2d.fromDegrees(180));
 
                     // Calculate rotational velocity
                     // We use current rotation and target angle (both in radians)
@@ -77,7 +78,7 @@ public class Shooter extends SubsystemBase {
                         currentPose.getRotation().getRadians(), 
                         targetAngle.getRadians()
                     );
-
+                    
                     // Use the standard FieldCentric request
                     RobotContainer.drivetrain.setControl(
                         new SwerveRequest.FieldCentric()
@@ -86,10 +87,16 @@ public class Shooter extends SubsystemBase {
                             .withRotationalRate(rotationOutput) // Apply our PID result
                             .withDeadband(0.1)
                     );
+                    
 
                     double rps = getShooterRate();
-                    Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
-                    Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+                    Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
+                    Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
+
+                    if(Robot.shooter1.getClosedLoopError(true).getValue() < 1)
+                    {
+                        infeeder.feed(true);
+                    }
                     shootspeed = rps;
 
                 }, RobotContainer.drivetrain);
@@ -97,12 +104,11 @@ public class Shooter extends SubsystemBase {
                 // Shooter Motor Command
                 Command spinUp = runOnce(() -> {
                     double rps = getShooterRate();
-                    Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
-                    Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+                    Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
+                    Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
                 });
 
                 return spinUp.andThen(aimAndDrive).finallyDo((interrupted) -> {
-                    System.out.println("Shoot command ended, interrupted=" + interrupted);
                     stopShooter();
                 });
             });
@@ -113,8 +119,8 @@ public class Shooter extends SubsystemBase {
         {
             return runOnce( () -> {
                 double rps = 10;
-                Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
-                Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
+                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
+                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
             });
         }
 
@@ -123,9 +129,8 @@ public class Shooter extends SubsystemBase {
         {
             return runOnce( () -> {
                 double rps = getShooterRate();
-                Robot.shooter1.setControl(new MotionMagicVelocityVoltage(rps));
-                Robot.shooter2.setControl(new MotionMagicVelocityVoltage(rps));
-                System.out.println("Shooter rps: " + rps);
+                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
+                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
             });
         }
         else
@@ -138,7 +143,7 @@ public class Shooter extends SubsystemBase {
     }
 
     //calls the map to get the estimated shooter rate for current position
-    public double getShooterRate()
+    public static double getShooterRate()
     {
         Pose2d currPose = RobotContainer.drivetrain.getState().Pose;
         Optional<Alliance> alliance = DriverStation.getAlliance();
@@ -152,7 +157,30 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stopShooter() {
-        Robot.shooter1.setControl(new MotionMagicVelocityVoltage(0));
-        Robot.shooter2.setControl(new MotionMagicVelocityVoltage(0));
+        Robot.shooter1.set(0);
+        Robot.shooter2.set(0);
+        infeeder.feed(false);
+    }
+
+    private final VoltageOut voltReq = new VoltageOut(0.0);
+    SysIdRoutine routine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            Volts.of(4),
+            null,
+            (state) -> SignalLogger.writeString("state", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(
+            (volts) -> Robot.shooter1.setControl(voltReq.withOutput(volts.in(Volts))),
+            null,
+            this
+        )   
+    );
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return routine.quasistatic(direction);
+    }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return routine.dynamic(direction);
     }
 }

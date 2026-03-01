@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Set;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,6 +20,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -81,8 +85,8 @@ public class RobotContainer {
     public final SendableChooser<Command> chooser;
 
     //Triggers
-    public static Trigger manualOverride = xbox.start();
-    public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
+    //public static Trigger manualOverride = xbox.start();
+    //public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -90,41 +94,43 @@ public class RobotContainer {
         configureBindings();
         configurePathPlannerEventTriggers();
         drivetrain.configurePathPlanner();
-        System.out.println("AutoBuilder Configured: " + AutoBuilder.isConfigured());
-        SmartDashboard.putData(Telemetry.m_field);
+        //SmartDashboard.putData(Telemetry.m_field);
         PathPlannerLogging.setLogTargetPoseCallback(Telemetry::setTargetPose);
         chooser = new SendableChooser<>();
         
         chooser.setDefaultOption("None", Commands.none());
         chooser.addOption("Left", Commands.defer(() -> AutoBuilder.buildAuto("LeftAutoDepot"), Set.of(drivetrain)));
-        chooser.addOption("Right", AutoBuilder.buildAuto("RightAutoShoot"));
-        chooser.addOption("Center", AutoBuilder.buildAuto("CenterAutoClimb"));
+        chooser.addOption("Right", Commands.defer(() -> AutoBuilder.buildAuto("RightAutoShoot"), Set.of(drivetrain)));
+        chooser.addOption("Center", Commands.defer(() -> AutoBuilder.buildAuto("CenterAutoClimb"), Set.of(drivetrain)));
         
         SmartDashboard.putData("Auto", chooser);
         
 
         var followerControl = new Follower(Robot.RaiseLower1.getDeviceID(), MotorAlignmentValue.Opposed);
         Robot.RaiseLower2.setControl(followerControl);
+
+        SmartDashboard.putData(Telemetry.m_field);
+
     }
 
     private void configureBindings() {
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
                 double reduction = (-joystick.getRawAxis(3) + 1) / 2;
-                SmartDashboard.putNumber("Speed %", reduction);
+                //SmartDashboard.putNumber("Speed %", reduction);
 
                 if (fieldOrient)
                 {
                     return drive
-                    .withVelocityX(joystick.getRawAxis(1) * MaxSpeed * reduction)
-                    .withVelocityY(joystick.getRawAxis(0) * MaxSpeed * reduction)
+                    .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
+                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
                     .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
                 }
                 else
                 {
                     return rcdrive
-                    .withVelocityX(joystick.getRawAxis(1) * MaxSpeed * reduction)
-                    .withVelocityY(joystick.getRawAxis(0) * MaxSpeed * reduction)
+                    .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
+                    .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
                     .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
                 }
                 
@@ -157,7 +163,7 @@ public class RobotContainer {
             xbox.b().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UP")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(0))
+                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(0))
                 .alongWith(ledSubsystem.runPattern("REST"))
             );
@@ -166,7 +172,7 @@ public class RobotContainer {
             xbox.y().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(0))
+                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(2))
                 .alongWith(ledSubsystem.runPattern("REST"))
             );
@@ -175,7 +181,7 @@ public class RobotContainer {
             xbox.x().and(manualOverride.negate()).onTrue(
                 intake.intake(true, "DOWN")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(0))
+                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(1))
                 .alongWith(ledSubsystem.runPattern("INTAKE"))
             );
@@ -184,7 +190,7 @@ public class RobotContainer {
             xbox.rightTrigger().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("HIGH"))
-                .alongWith(infeed.feed(1))
+                .alongWith(infeed.feed(true))
                 .alongWith(stateMachine.SetState(3))
                 .alongWith(ledSubsystem.runPattern("SHOOT"))
             );
@@ -193,7 +199,7 @@ public class RobotContainer {
             xbox.leftTrigger().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("LOW"))
-                .alongWith(infeed.feed(0))
+                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(4))
                 .alongWith(ledSubsystem.runPattern("PASS"))
             );
@@ -202,7 +208,7 @@ public class RobotContainer {
             xbox.rightBumper().and(manualOverride.negate()).onTrue(
                 intake.intake(true, "DOWN")
                 .alongWith(shooter.shoot("HIGH"))
-                .alongWith(infeed.feed(1))
+                .alongWith(infeed.feed(true))
                 .alongWith(stateMachine.SetState(7))
                 .alongWith(ledSubsystem.runPattern("SHOOT"))
                 );
@@ -214,7 +220,7 @@ public class RobotContainer {
             xbox.povDown().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(0))
+                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("DOWN"))
                 .alongWith(ledSubsystem.runPattern("CLIMB"))
@@ -224,7 +230,7 @@ public class RobotContainer {
             xbox.povUp().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(0))
+                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(5))
                 .alongWith(climb.climb("UP"))
                 .alongWith(ledSubsystem.runPattern("CLIMB"))
@@ -258,10 +264,12 @@ public class RobotContainer {
             );
 
         */
-            xbox.povUp().onTrue(intake.testBoth(0,0));
-            xbox.povDown().onTrue(intake.testBoth(-.75, 14).alongWith(ledSubsystem.runPattern("AUTO")));
-
-        
+            //xbox.povUp().onTrue(intake.testBoth(0,0));
+            //xbox.povDown().onTrue(intake.testBoth(-.75, 14).alongWith(ledSubsystem.runPattern("AUTO")));
+            xbox.rightTrigger().whileTrue(shooter.shoot("HIGH"));
+            xbox.rightTrigger().onFalse(shooter.shoot("OFF"));
+            //xbox.rightBumper().onTrue(ledSubsystem.runPattern("AUTO"));
+            
 
         /* 
         Commenting this out because I have no clue what it does, it seems like
@@ -287,25 +295,27 @@ public class RobotContainer {
         resetFieldCentricHeadingButton.onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        drivetrain.resetPose(new Pose2d(new Translation2d(16.137, 7.690), new Rotation2d(Math.toRadians(180))));
     }
 
     public void configurePathPlannerEventTriggers()
     {
-        new EventTrigger("shoot").onTrue(
+        /*new EventTrigger("shoot").onTrue(
             Commands.print("Shooting")/*.alongWith(
-            infeed.feed(.5))
-            .alongWith(shooter.shoot("AUTO"))*/
+            infeed.feed(true))
+            .alongWith(shooter.shoot("AUTO"))
         );
         new EventTrigger("stopshoot").onTrue(Commands.print("Stopping Shooter")/*shooter.shoot("STOP").alongWith(
-            infeed.feed(0)
+            infeed.feed(false)
         )*/
-        );
-        NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
-        NamedCommands.registerCommand("ActivateLEDs", Commands.print("enabling leds"));
-        NamedCommands.registerCommand("climb", climb.climb("UP"));
-        new EventTrigger("climb").onTrue(Commands.print("Climbing"));
-        new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
-        new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
+        //);
+        //NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP").alongWith(infeed.feed(false)));
+        //NamedCommands.registerCommand("ActivateLEDs", Commands.print("enabling leds"));
+        //NamedCommands.registerCommand("climb", climb.climb("UP"));
+        //new EventTrigger("climb").onTrue(Commands.print("Climbing"));
+        //new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
+        //new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
     }
 
     public Command getAutonomousCommand() {
