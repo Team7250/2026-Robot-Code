@@ -268,7 +268,7 @@ public class RobotContainer {
             //xbox.povDown().onTrue(intake.testBoth(-.75, 14).alongWith(ledSubsystem.runPattern("AUTO")));
             xbox.rightTrigger().whileTrue(shooter.shoot("HIGH"));
             xbox.rightTrigger().onFalse(shooter.shoot("OFF"));
-            //xbox.rightBumper().onTrue(ledSubsystem.runPattern("AUTO"));
+            xbox.rightBumper().onTrue(ledSubsystem.runPattern("AUTO"));
             
 
         /* 

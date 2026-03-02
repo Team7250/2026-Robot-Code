@@ -13,18 +13,17 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static final int kPort = 1;
-  private static final int kLength = 20;
+  private static final int kPort = 8;
+  private static final int kLength = 150;
 
   private final int brightness = 40;
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
 
   // Patterns
-  private final LEDPattern blank = LEDPattern.solid(Color.kBlack);
+  private final LEDPattern blank = LEDPattern.solid(Color.kPurple);
   private final LEDPattern restpattern = LEDPattern.solid(Color.kPurple).breathe(Seconds.of(5)).atBrightness(Percent.of(brightness));
   private final LEDPattern passpattern = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kPeru, Color.kRed).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(5), Feet.of(8.2/150));
   private final LEDPattern intakepattern = LEDPattern.steps(Map.of(0, Color.kBlack, 0.25, Color.kYellow, 0.5, Color.kYellow, 0.75, Color.kBlack)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(5), Feet.of(8.2/150));
