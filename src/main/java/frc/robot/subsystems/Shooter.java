@@ -79,14 +79,14 @@ public class Shooter extends SubsystemBase {
                         targetAngle.getRadians()
                     );
                     
-                    // Use the standard FieldCentric request
+                    /*// Use the standard FieldCentric request
                     RobotContainer.drivetrain.setControl(
                         new SwerveRequest.FieldCentric()
                             .withVelocityX(-Robot.joystick.getRawAxis(1) * 1.0)
                             .withVelocityY(-Robot.joystick.getRawAxis(0) * 1.0)
                             .withRotationalRate(rotationOutput) // Apply our PID result
                             .withDeadband(0.1)
-                    );
+                    );*/
                     
 
                     double rps = getShooterRate();

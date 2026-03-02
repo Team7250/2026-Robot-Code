@@ -264,8 +264,9 @@ public class RobotContainer {
             );
 
         */
-            //xbox.povUp().onTrue(intake.testBoth(0,0));
-            //xbox.povDown().onTrue(intake.testBoth(-.75, 14).alongWith(ledSubsystem.runPattern("AUTO")));
+            xbox.povUp().onTrue(intake.testBoth(0,0));
+            xbox.povDown().onTrue(intake.testBoth(-.75, 12));
+            xbox.povRight().onTrue(intake.testRotate(0));
             xbox.rightTrigger().whileTrue(shooter.shoot("HIGH"));
             xbox.rightTrigger().onFalse(shooter.shoot("OFF"));
             xbox.rightBumper().onTrue(ledSubsystem.runPattern("AUTO"));
