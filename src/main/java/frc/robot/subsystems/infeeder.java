@@ -10,8 +10,8 @@ import frc.robot.Robot;
 
 public class infeeder extends SubsystemBase{
 
-    static VoltageOut vIndexer = new VoltageOut(Volts.of(-5));
-    static VoltageOut vFeeder = new VoltageOut(Volts.of(-4));
+    static VoltageOut vIndexer = new VoltageOut(Volts.of(-8));
+    static VoltageOut vFeeder = new VoltageOut(Volts.of(-9));
 
     //testcommands, we need to map buttons to them
     public Command testfeed(double powervolts) {
@@ -25,7 +25,7 @@ public class infeeder extends SubsystemBase{
         });
     }
     public static void feed(boolean on) {
-        if(on && (Math.abs(Robot.shooter1.getVelocity().getValueAsDouble() - Shooter.getShooterRate()) < 1))
+        if(on)
         {
             
             Robot.feeder.setControl(vIndexer);
@@ -33,9 +33,23 @@ public class infeeder extends SubsystemBase{
         }
         else
         {
-            System.out.println(Robot.shooter1.getVelocity().getValueAsDouble());
             Robot.feeder.set(0);
             Robot.indexer.set(0);
         }
+    }  
+    public Command feedAuto(boolean on) {
+        return runOnce(() -> {
+            if(on)
+            {
+                
+                Robot.feeder.setControl(vIndexer);
+                Robot.indexer.setControl(vFeeder);
+            }
+            else
+            {
+                Robot.feeder.set(0);
+                Robot.indexer.set(0);
+            }
+        });
     }  
 }

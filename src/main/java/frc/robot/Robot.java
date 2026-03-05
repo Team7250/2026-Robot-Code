@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -76,9 +77,6 @@ public class Robot extends TimedRobot {
     public static TalonFX RaiseLower2 = new TalonFX(18);
     public static TalonFX RotateIntake = new TalonFX(19);
 
-    // Storage
-    public static TalonFX storage1 = new TalonFX(17);
-
     // Infeeder
     public static TalonFX feeder = new TalonFX(20);
     public static TalonFX indexer = new TalonFX(21);
@@ -122,8 +120,8 @@ public class Robot extends TimedRobot {
         configureMotors(shooter1, 0, 200, 0, true, false, 40, 0.02, 0.0092, 0.0, 0.05, 0.001, 0.0);
         configureMotors(shooter2, 0, 200, 0, false, false, 40, 0.015, 0.0092, 0.0, 0.05, 0.005, 0.0);
 
-        configureMotors(RaiseLower1, 16, 4, 1, false, true, 40, .25, .12, .01, 4.8, 0, .1);
-        configureMotors(RaiseLower2, 16, 4, 1, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower1, 10, 40, 1600, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower2, 10, 40, 1600, false, true, 40, .25, .12, .01, 4.8, 0, .1);
         configureMotors(RotateIntake, 80, 160, 1600, false, false, 40, .25, .12, .01, 4.8, 0, .1);
 
         
@@ -225,7 +223,7 @@ public class Robot extends TimedRobot {
             .withMotionMagicJerk(j);
         // Default is 80-160-1600. Adjust as needed.
 
-        MotorOutputConfigs mconfigs = new MotorOutputConfigs();
+        MotorOutputConfigs mconfigs = TalonFXConfigs.MotorOutput;
 
         if(inverted)
         {
@@ -245,14 +243,13 @@ public class Robot extends TimedRobot {
             mconfigs.NeutralMode = NeutralModeValue.Coast;
         }
 
-        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+        CurrentLimitsConfigs currentLimitsConfigs = TalonFXConfigs.CurrentLimits;
         currentLimitsConfigs.StatorCurrentLimit = currentLimit;
         currentLimitsConfigs.StatorCurrentLimitEnable = true;
 
-        motor.setPosition(0);
+        
 
         motor.getConfigurator().apply(TalonFXConfigs);
-        motor.getConfigurator().apply(mconfigs);
-        motor.getConfigurator().apply(currentLimitsConfigs);
+        motor.setPosition(0);
     }
 }

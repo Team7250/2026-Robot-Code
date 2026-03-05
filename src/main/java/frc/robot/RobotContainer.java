@@ -85,8 +85,9 @@ public class RobotContainer {
     public final SendableChooser<Command> chooser;
 
     //Triggers
-    //public static Trigger manualOverride = xbox.start();
-    //public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
+    public static Trigger manualOverride = xbox.start();
+    public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
+    public static Trigger intakeDown = new Trigger(() -> Robot.RotateIntake.getPosition().getValueAsDouble() >= Intake.LOW);
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -157,13 +158,12 @@ public class RobotContainer {
             //Shooter: mode (HIGH, LOW, or OFF)
             //StateMachine: stateId (int)
             //Climb: io (UP, DOWN)
-        /*
+        
             
             //REST
             xbox.b().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UP")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(0))
                 .alongWith(ledSubsystem.runPattern("REST"))
             );
@@ -172,7 +172,6 @@ public class RobotContainer {
             xbox.y().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(2))
                 .alongWith(ledSubsystem.runPattern("REST"))
             );
@@ -181,16 +180,19 @@ public class RobotContainer {
             xbox.x().and(manualOverride.negate()).onTrue(
                 intake.intake(true, "DOWN")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(1))
                 .alongWith(ledSubsystem.runPattern("INTAKE"))
             );
             
             //SHOOTING
-            xbox.rightTrigger().and(manualOverride.negate()).onTrue(
-                intake.intake(false, "UNCHANGED")
-                .alongWith(shooter.shoot("HIGH"))
-                .alongWith(infeed.feed(true))
+            xbox.rightTrigger().and(manualOverride.negate()).whileTrue(
+                shooter.shoot("HIGH")
+                .alongWith(stateMachine.SetState(3))
+                .alongWith(ledSubsystem.runPattern("SHOOT"))
+            );
+
+            xbox.rightTrigger().and(manualOverride.negate()).whileFalse(
+                shooter.shoot("OFF")
                 .alongWith(stateMachine.SetState(3))
                 .alongWith(ledSubsystem.runPattern("SHOOT"))
             );
@@ -199,30 +201,34 @@ public class RobotContainer {
             xbox.leftTrigger().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("LOW"))
-                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(4))
                 .alongWith(ledSubsystem.runPattern("PASS"))
             );
             
             //INTAKE WHILE SHOOT
-            xbox.rightBumper().and(manualOverride.negate()).onTrue(
+            xbox.rightBumper().and(manualOverride.negate()).whileTrue(
                 intake.intake(true, "DOWN")
                 .alongWith(shooter.shoot("HIGH"))
-                .alongWith(infeed.feed(true))
                 .alongWith(stateMachine.SetState(7))
                 .alongWith(ledSubsystem.runPattern("SHOOT"))
                 );
+            xbox.rightBumper().and(manualOverride.negate()).onFalse(
+                intake.intake(false, "DOWN")
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(7))
+                .alongWith(ledSubsystem.runPattern("SHOOT"))
+            );
+
+            xbox.a().onTrue(intake.testBoth(0, 10));
+            xbox.a().onFalse(intake.intake(false, "DOWN"));
             
-            //HOPPER MOVEMENT LOCK (manual override)
-            xbox.leftBumper().onTrue(Commands.print("LB button pressed"));
-            
+            intakeDown.onTrue(intake.testIntakePower(0));
+            /*
             //CLIMB DOWN
             xbox.povDown().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(5))
-                .alongWith(climb.climb("DOWN"))
                 .alongWith(ledSubsystem.runPattern("CLIMB"))
             );
             
@@ -230,12 +236,10 @@ public class RobotContainer {
             xbox.povUp().and(manualOverride.negate()).onTrue(
                 intake.intake(false, "UNCHANGED")
                 .alongWith(shooter.shoot("OFF"))
-                .alongWith(infeed.feed(false))
                 .alongWith(stateMachine.SetState(5))
-                .alongWith(climb.climb("UP"))
                 .alongWith(ledSubsystem.runPattern("CLIMB"))
             );
-
+            */
             //ORIENT SWITCH
             orientSwitch.onTrue(
                 Commands.runOnce(() -> {
@@ -243,7 +247,7 @@ public class RobotContainer {
                 System.out.println("Field Oriented: " + fieldOrient);
         })
             );
-
+            /*
         //MANUAL OVERRIDE CONTROLS
                     //INTAKING
             xbox.povRight().and(manualOverride).onTrue(
@@ -264,18 +268,13 @@ public class RobotContainer {
             );
 
         */
-            xbox.povUp().onTrue(intake.testBoth(0,0));
-            xbox.povDown().onTrue(intake.testBoth(-.75, 12));
-            xbox.povRight().onTrue(intake.testRotate(0));
-            xbox.rightTrigger().whileTrue(shooter.shoot("HIGH"));
-            xbox.rightTrigger().onFalse(shooter.shoot("OFF"));
-            xbox.rightBumper().onTrue(ledSubsystem.runPattern("AUTO"));
+            
             
 
         /* 
         Commenting this out because I have no clue what it does, it seems like
         while you're holding a button it just points your wheels instead
-        of driving? There was no commented explanation.
+        of driving? There was no commented explanation. 
 
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
@@ -297,29 +296,24 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        drivetrain.resetPose(new Pose2d(new Translation2d(16.137, 7.690), new Rotation2d(Math.toRadians(180))));
+        //drivetrain.resetPose(new Pose2d(new Translation2d(16.137, 7.690), new Rotation2d(Math.toRadians(180))));
     }
 
     public void configurePathPlannerEventTriggers()
     {
-        /*new EventTrigger("shoot").onTrue(
-            Commands.print("Shooting")/*.alongWith(
-            infeed.feed(true))
-            .alongWith(shooter.shoot("AUTO"))
-        );
-        new EventTrigger("stopshoot").onTrue(Commands.print("Stopping Shooter")/*shooter.shoot("STOP").alongWith(
-            infeed.feed(false)
-        )*/
-        //);
-        //NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP").alongWith(infeed.feed(false)));
+        new EventTrigger("intakedown").onTrue(intake.testIntake(10));
+        NamedCommands.registerCommand("shoot", shooter.shootAuto());
+        new EventTrigger("stopshoot").onTrue(shooter.shoot("STOP"));
+        NamedCommands.registerCommand("feed", infeed.feedAuto(true));
+        NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
         //NamedCommands.registerCommand("ActivateLEDs", Commands.print("enabling leds"));
         //NamedCommands.registerCommand("climb", climb.climb("UP"));
         //new EventTrigger("climb").onTrue(Commands.print("Climbing"));
-        //new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
-        //new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
+        new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
+        new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
     }
 
     public Command getAutonomousCommand() {
-        return chooser.getSelected();
+        return AutoBuilder.buildAuto("LeftAutoDepot");//chooser.getSelected();
     }
 }

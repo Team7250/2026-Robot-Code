@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5304830053667258,
-        "y": 5.9577101967799635
+        "x": 0.6750071326676175,
+        "y": 6.034022824536376
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9312047823660639,
-        "y": 6.192737359484254
+        "x": 1.817451820331949,
+        "y": 6.069091895688682
       },
       "isLocked": false,
       "linkedName": "Endpoint2LeftAuto"
@@ -20,8 +20,8 @@
         "y": 5.9577101967799635
       },
       "prevControl": {
-        "x": 0.8336940098147412,
-        "y": 6.083432180777668
+        "x": 0.7769253034963324,
+        "y": 6.036570970121964
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,8 +39,8 @@
       "command": null
     },
     {
-      "name": "shoot",
-      "waypointRelativePos": 0.9525423728813559,
+      "name": "intakedown",
+      "waypointRelativePos": 0.9642133693450107,
       "endWaypointRelativePos": null,
       "command": null
     }

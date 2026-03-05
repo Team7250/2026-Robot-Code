@@ -8,7 +8,7 @@ import frc.robot.Robot;
 
 public class Intake extends SubsystemBase {
 
-    double LOW = 14;
+    public static double LOW = 15;
     double HIGH = 0;
      //use motion magic to control the position
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
@@ -78,7 +78,7 @@ public class Intake extends SubsystemBase {
         }).andThen(() -> {
             if(rotate)
             {
-                Robot.RotateIntake.set(.6);
+                Robot.RotateIntake.set(-1);
             }
         });
     }

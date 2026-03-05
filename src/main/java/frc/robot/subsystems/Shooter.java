@@ -32,9 +32,8 @@ public class Shooter extends SubsystemBase {
         //we add our keys in the format of distance (meters), velocity (rotations per second)
         shooterVelocitiesMap.put(1.9304, 45.0);
         shooterVelocitiesMap.put(2.3876, 48.0);
-        shooterVelocitiesMap.put(3.6576, 55.0);
-        
-        
+        shooterVelocitiesMap.put(2.6162, 58.0);
+        shooterVelocitiesMap.put(3.429, 65.0);
     }
     //we'll have to tune this when robot is ready
     private final edu.wpi.first.math.controller.PIDController headingPID = 
@@ -70,7 +69,7 @@ public class Shooter extends SubsystemBase {
                     Pose2d currentPose = RobotContainer.drivetrain.getState().Pose;
                     
                     // MATH: Calculate angle to hub
-                    Rotation2d targetAngle = hubPosition.minus(currentPose.getTranslation()).getAngle();//.plus(Rotation2d.fromDegrees(180));
+                    Rotation2d targetAngle = getPredictedTargetAngle(hubPosition);//hubPosition.minus(currentPose.getTranslation()).getAngle();//.plus(Rotation2d.fromDegrees(180));
 
                     // Calculate rotational velocity
                     // We use current rotation and target angle (both in radians)
@@ -79,23 +78,27 @@ public class Shooter extends SubsystemBase {
                         targetAngle.getRadians()
                     );
                     
-                    /*// Use the standard FieldCentric request
+                    // Use the standard FieldCentric request
                     RobotContainer.drivetrain.setControl(
                         new SwerveRequest.FieldCentric()
                             .withVelocityX(-Robot.joystick.getRawAxis(1) * 1.0)
                             .withVelocityY(-Robot.joystick.getRawAxis(0) * 1.0)
                             .withRotationalRate(rotationOutput) // Apply our PID result
                             .withDeadband(0.1)
-                    );*/
+                    );
                     
 
                     double rps = getShooterRate();
                     Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                     Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
 
-                    if(Robot.shooter1.getClosedLoopError(true).getValue() < 1)
+                    if(Math.abs(Robot.shooter1.getClosedLoopError(true).getValue()) < 1)
                     {
                         infeeder.feed(true);
+                    }
+                    else
+                    {
+                        infeeder.feed(false);
                     }
                     shootspeed = rps;
 
@@ -103,7 +106,7 @@ public class Shooter extends SubsystemBase {
 
                 // Shooter Motor Command
                 Command spinUp = runOnce(() -> {
-                    double rps = getShooterRate();
+                    double rps = getPredictedShooterRate();
                     Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                     Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
                 });
@@ -118,9 +121,10 @@ public class Shooter extends SubsystemBase {
         else if (mode.equals("LOW"))
         {
             return runOnce( () -> {
-                double rps = 10;
+                double rps = 30;
                 Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                 Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
+                infeeder.feed(true);
             });
         }
 
@@ -131,6 +135,7 @@ public class Shooter extends SubsystemBase {
                 double rps = getShooterRate();
                 Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                 Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
+                infeeder.feed(true);
             });
         }
         else
@@ -140,6 +145,16 @@ public class Shooter extends SubsystemBase {
             });
         }
         
+    }
+
+    public Command shootAuto()
+    {
+        return runOnce( () -> {
+            double rps = getShooterRate();
+            Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
+            Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
+            //infeeder.feed(true);
+        });
     }
 
     //calls the map to get the estimated shooter rate for current position
@@ -154,6 +169,70 @@ public class Shooter extends SubsystemBase {
         double distance = currPose.getTranslation().getDistance(hubPosition);
         //we can just get from shooter map, it will automatically determine the value, even if it's not one we put in the table. It's very precise.
         return shooterVelocitiesMap.get(distance);
+    }
+
+    public Rotation2d getPredictedTargetAngle(Translation2d hubPosition) {
+        var state = RobotContainer.drivetrain.getState();   
+        Translation2d currentTranslation = state.Pose.getTranslation();
+        
+        double distance = currentTranslation.getDistance(hubPosition);
+        
+        double timeOfFlight = distance / 5.0; 
+        double systemLatency = 0.08; 
+        double totalLookAhead = timeOfFlight + systemLatency;
+
+        double vx = state.Speeds.vxMetersPerSecond;
+        double vy = state.Speeds.vyMetersPerSecond;
+
+        Translation2d predictedTranslation = new Translation2d(
+            currentTranslation.getX() - (vx * totalLookAhead),
+            currentTranslation.getY() - (vy * totalLookAhead)
+        );
+
+        return hubPosition.minus(predictedTranslation).getAngle();
+    }
+
+    public static double getPredictedShooterRate() {
+        var state = RobotContainer.drivetrain.getState();
+        Pose2d currPose = state.Pose;
+        Translation2d robotVelocity = new Translation2d(
+            state.Speeds.vxMetersPerSecond, 
+            state.Speeds.vyMetersPerSecond
+        );
+
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        final Translation2d hubPosition = (alliance.isPresent() && alliance.get() == Alliance.Red)
+            ? new Translation2d(11.911, 4.305)
+            : new Translation2d(4.627, 4.305);
+
+        // 1. Calculate current distance and initial ToF estimate
+        double currentDistance = currPose.getTranslation().getDistance(hubPosition);
+        double timeOfFlight = currentDistance / 5; // Assume ~13m/s average exit velocity
+        
+        // 2. Predict distance at the moment of impact
+        Translation2d predictedTranslation = currPose.getTranslation().plus(
+            robotVelocity.times(timeOfFlight + 0.08) // Velocity * (ToF + Latency)
+        );
+        double predictedDistance = predictedTranslation.getDistance(hubPosition);
+
+        // 3. Get base RPS from your map using the PREDICTED distance
+        double baseRps = shooterVelocitiesMap.get(predictedDistance);
+
+        // 4. Compensate for "Added Velocity" from robot movement
+        // We project robot velocity onto the vector pointing to the hub
+        Translation2d unitVectorToHub = hubPosition.minus(currPose.getTranslation()).div(currentDistance);
+        
+        // Dot product: how much of our 2D velocity is directed AT the hub?
+        double radialVelocity = (robotVelocity.getX() * unitVectorToHub.getX()) + 
+                                (robotVelocity.getY() * unitVectorToHub.getY());
+
+        // Convert radial velocity (m/s) to an RPS offset. 
+        // This is a "fudge factor" you'll need to tune. 
+        // Usually, 1 m/s of robot speed equals ~1.5 to 2.5 RPS adjustment.
+        double velocityAdjustmentFactor = 2.0; 
+        double finalRps = baseRps - (radialVelocity * velocityAdjustmentFactor);
+
+        return finalRps;
     }
 
     public void stopShooter() {

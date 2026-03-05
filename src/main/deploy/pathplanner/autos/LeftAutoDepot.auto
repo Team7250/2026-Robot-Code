@@ -17,9 +17,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "feed"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopshoot"
           }
         },
         {
@@ -35,21 +59,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 6.0
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "feed"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopshoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "GoMidAfterShootLeft"
           }
         }
       ]

@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -113,8 +115,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             },
 
             new PPHolonomicDriveController(
-                new PIDConstants(5, 0, 0), // Translation PID
-                new PIDConstants(5, 0.0, 0.0)  // Rotation PID
+                new PIDConstants(1.65, 0, 0.02), // Translation PID
+                new PIDConstants(1.4, 0.0, 0.0)  // Rotation PID
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
@@ -235,14 +237,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void updateVision() {
-        String[] limelights = {"limelight-front", "limelight-back"};
+        String[] limelights = {"limelight-front", "limelight-side"};
 
         for (String name : limelights) {
             // 1. Get the estimate using MegaTag2
             LimelightHelpers.SetRobotOrientation(name, 
                 getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
             var result = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-
             // 2. Filter: Only process if tags are visible
             if (result.tagCount > 0) {
                 
@@ -267,7 +268,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
                 // 3. Add the measurement to the CTRE Pose Estimator
                 this.addVisionMeasurement(result.pose, result.timestampSeconds);
-                System.out.println("added a vision measurement");
             }
         }
     }
