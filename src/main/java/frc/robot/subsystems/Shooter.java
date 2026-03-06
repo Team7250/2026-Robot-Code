@@ -30,10 +30,13 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         //we add our keys in the format of distance (meters), velocity (rotations per second)
-        shooterVelocitiesMap.put(1.9304, 45.0);
-        shooterVelocitiesMap.put(2.3876, 48.0);
-        shooterVelocitiesMap.put(2.6162, 58.0);
-        shooterVelocitiesMap.put(3.429, 65.0);
+        shooterVelocitiesMap.put(2.032, 48.0);
+        shooterVelocitiesMap.put(2.3876, 50.0);
+        shooterVelocitiesMap.put(2.7432, 52.0);
+        shooterVelocitiesMap.put(3.2512, 55.0);
+        shooterVelocitiesMap.put(3.7338, 58.0);
+        shooterVelocitiesMap.put(3.9624, 62.0);
+        shooterVelocitiesMap.put(4.6482, 63.0);
     }
     //we'll have to tune this when robot is ready
     private final edu.wpi.first.math.controller.PIDController headingPID = 
@@ -150,7 +153,7 @@ public class Shooter extends SubsystemBase {
     public Command shootAuto()
     {
         return runOnce( () -> {
-            double rps = getShooterRate();
+            double rps = getPredictedShooterRate();
             Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
             Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
             //infeeder.feed(true);
