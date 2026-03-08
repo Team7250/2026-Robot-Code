@@ -3,9 +3,13 @@
   "robotLength": 0.898525,
   "holonomicMode": true,
   "pathFolders": [
-    "LeftAutoDepot",
     "CenterAutoClimb",
-    "RightAutoShoot"
+    "CenterDepot",
+    "LeftAutoDepot",
+    "LeftMid2x",
+    "Center HP",
+    "RightAutoShoot",
+    "RightHumanPlayerAuto"
   ],
   "autoFolders": [],
   "defaultMaxVel": 2.5,

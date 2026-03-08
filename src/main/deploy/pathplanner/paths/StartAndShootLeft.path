@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.879662038800255,
-        "y": 7.98927829907428
+        "x": 3.9863831808179544,
+        "y": 7.843595438249191
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.315277280858676,
-        "y": 6.119964221824687
+        "x": 0.9596576319543504,
+        "y": 6.771526390870186
       },
       "prevControl": {
-        "x": 2.4788510918271096,
-        "y": 6.309024022854052
+        "x": 1.107202510181661,
+        "y": 6.973344400247169
+      },
+      "nextControl": {
+        "x": 0.7621884060015303,
+        "y": 6.501419786196225
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.5844365192582024,
+        "y": 4.9083594864479325
+      },
+      "prevControl": {
+        "x": 0.7571561499173406,
+        "y": 6.155335907583351
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,14 +45,33 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "SlowDownForIntake",
+      "minWaypointRelativePos": 0.8480756245780001,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "intakedown",
+      "name": "intake",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -49,7 +84,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.658354537800854
+    "rotation": 72.89727103094762
   },
   "reversed": false,
   "folder": "LeftAutoDepot",

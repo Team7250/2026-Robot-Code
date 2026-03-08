@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6750071326676175,
-        "y": 6.034022824536376
+        "x": 0.5844365192582024,
+        "y": 4.9083594864479325
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.817451820331949,
-        "y": 6.069091895688682
+        "x": 1.894010227314387,
+        "y": 5.666004231060333
       },
       "isLocked": false,
-      "linkedName": "Endpoint2LeftAuto"
+      "linkedName": "Endpoint1LeftAuto"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.9577101967799635
       },
       "prevControl": {
-        "x": 0.7769253034963324,
-        "y": 6.036570970121964
+        "x": 1.0313303817147406,
+        "y": 5.397366012875973
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,13 +36,34 @@
       "name": "stopintake",
       "waypointRelativePos": 0.04406779661016946,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopintake"
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.6644159351789292,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
     },
     {
       "name": "intakedown",
       "waypointRelativePos": 0.9642133693450107,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakedown"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -61,7 +82,7 @@
   "folder": "LeftAutoDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 72.89727103094762
   },
   "useDefaultConstraints": true
 }

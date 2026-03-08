@@ -34,6 +34,7 @@ public class Shooter extends SubsystemBase {
         shooterVelocitiesMap.put(2.3876, 48.0);
         shooterVelocitiesMap.put(2.7432, 50.0);
         shooterVelocitiesMap.put(3.2512, 53.0);
+        shooterVelocitiesMap.put(3.3274, 53.5);
         shooterVelocitiesMap.put(3.7338, 56.0);
         shooterVelocitiesMap.put(3.9624, 60.0);
         shooterVelocitiesMap.put(4.6482, 61.0);
@@ -84,8 +85,8 @@ public class Shooter extends SubsystemBase {
                     // Use the standard FieldCentric request
                     RobotContainer.drivetrain.setControl(
                         new SwerveRequest.FieldCentric()
-                            .withVelocityX(-Robot.joystick.getRawAxis(1) * 1.0)
-                            .withVelocityY(-Robot.joystick.getRawAxis(0) * 1.0)
+                            .withVelocityX(-Robot.joystick.getRawAxis(1) * .5)
+                            .withVelocityY(-Robot.joystick.getRawAxis(0) * .5)
                             .withRotationalRate(rotationOutput) // Apply our PID result
                             .withDeadband(0.1)
                     );
@@ -95,7 +96,7 @@ public class Shooter extends SubsystemBase {
                     Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                     Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
 
-                    if(Math.abs(Robot.shooter1.getClosedLoopError(true).getValue()) < 1)
+                    if(Math.abs(Robot.shooter1.getClosedLoopError(true).getValue()) < 5.0 && Robot.shooter1.getVelocity(true).getValueAsDouble() > 25.0)
                     {
                         infeeder.feed(true);
                     }
@@ -109,7 +110,7 @@ public class Shooter extends SubsystemBase {
 
                 // Shooter Motor Command
                 Command spinUp = runOnce(() -> {
-                    double rps = getPredictedShooterRate();
+                    double rps = getShooterRate();
                     Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                     Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
                 });
@@ -124,18 +125,7 @@ public class Shooter extends SubsystemBase {
         else if (mode.equals("LOW"))
         {
             return runOnce( () -> {
-                double rps = 30;
-                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
-                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
-                infeeder.feed(true);
-            });
-        }
-
-        //AUTO is for shooting during auto, aiming will be done by pathplanner
-        else if(mode.equals("AUTO"))
-        {
-            return runOnce( () -> {
-                double rps = getShooterRate();
+                double rps = 60;
                 Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
                 Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
                 infeeder.feed(true);
@@ -153,9 +143,18 @@ public class Shooter extends SubsystemBase {
     public Command shootAuto()
     {
         return runOnce( () -> {
-            double rps = getPredictedShooterRate();
+            double rps = getShooterRate();
             Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(rps));
             Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(rps));
+            //infeeder.feed(true);
+        });
+    }
+
+    public Command stopShooterAuto()
+    {
+        return runOnce( () -> {
+            Robot.shooter1.set(0);
+            Robot.shooter2.set(0);
             //infeeder.feed(true);
         });
     }
@@ -181,7 +180,7 @@ public class Shooter extends SubsystemBase {
         double distance = currentTranslation.getDistance(hubPosition);
         
         double timeOfFlight = distance / 5.0; 
-        double systemLatency = 0.08; 
+        double systemLatency = 0.16; 
         double totalLookAhead = timeOfFlight + systemLatency;
 
         double vx = state.Speeds.vxMetersPerSecond;

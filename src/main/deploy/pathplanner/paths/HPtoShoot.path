@@ -1,0 +1,66 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4679885877318113,
+        "y": 0.48333808844507875
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.732537277468347,
+        "y": 0.5053756054153576
+      },
+      "isLocked": false,
+      "linkedName": ":)"
+    },
+    {
+      "anchor": {
+        "x": 2.6158059914407983,
+        "y": 2.1394864479315263
+      },
+      "prevControl": {
+        "x": 2.2070809731493424,
+        "y": 1.9219960761787418
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": ">:)"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.7481431465225811,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 44.25107821717618
+  },
+  "reversed": false,
+  "folder": "RightHumanPlayerAuto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.92404535277268
+  },
+  "useDefaultConstraints": true
+}

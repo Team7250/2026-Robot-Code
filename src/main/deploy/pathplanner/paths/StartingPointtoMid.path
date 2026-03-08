@@ -8,35 +8,45 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.504782660576815,
-        "y": 0.8622665682005553
+        "x": 5.514065620542081,
+        "y": 0.48333808844507875
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8507155635062613,
-        "y": 1.5281753130590334
+        "x": 7.713637660485022,
+        "y": 2.7734807417974334
       },
       "prevControl": {
-        "x": 2.7127296502933564,
-        "y": 1.7366456652792008
+        "x": 7.390171184022824,
+        "y": 0.6644793152639101
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Endpoint1RightAuto"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4328358208955248,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shoot",
-      "waypointRelativePos": 0.9864406779661012,
+      "name": "intake",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -49,7 +59,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.88412400752207
+    "rotation": -94.63546342690259
   },
   "reversed": false,
   "folder": "RightAutoShoot",

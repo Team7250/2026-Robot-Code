@@ -20,6 +20,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -86,7 +88,6 @@ public class RobotContainer {
 
     //Triggers
     public static Trigger manualOverride = xbox.start();
-    public static Trigger leftStickMoved = new Trigger(() -> Math.abs(xbox.getLeftY()) > 0.1);
     public static Trigger intakeDown = new Trigger(() -> Robot.RotateIntake.getPosition().getValueAsDouble() >= Intake.LOW);
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -100,9 +101,16 @@ public class RobotContainer {
         chooser = new SendableChooser<>();
         
         chooser.setDefaultOption("None", Commands.none());
-        chooser.addOption("Left", Commands.defer(() -> AutoBuilder.buildAuto("LeftAutoDepot"), Set.of(drivetrain)));
-        chooser.addOption("Right", Commands.defer(() -> AutoBuilder.buildAuto("RightAutoShoot"), Set.of(drivetrain)));
-        chooser.addOption("Center", Commands.defer(() -> AutoBuilder.buildAuto("CenterAutoClimb"), Set.of(drivetrain)));
+        chooser.addOption("LeftDepot", AutoBuilder.buildAuto("LeftAutoDepot"));        
+        chooser.addOption("LeftMid2x", AutoBuilder.buildAuto("LeftMid2x"));
+        
+        chooser.addOption("RightMid2x", AutoBuilder.buildAuto("RightMid2x"));
+        chooser.addOption("RightHumanPlayer", AutoBuilder.buildAuto("RightHumanPlayerAuto"));
+
+        chooser.addOption("CenterToHumanPlayer", AutoBuilder.buildAuto("CenterHP"));
+        chooser.addOption("CenterToBoth", AutoBuilder.buildAuto("CenterDepotandHP"));
+        chooser.addOption("CenterToDepot", AutoBuilder.buildAuto("CenterDepot"));
+        chooser.addOption("CenterJustShoot", AutoBuilder.buildAuto("CenterAutoClimb"));
         
         SmartDashboard.putData("Auto", chooser);
         
@@ -112,6 +120,8 @@ public class RobotContainer {
 
         SmartDashboard.putData(Telemetry.m_field);
 
+        ledSubsystem.on();
+
     }
 
     private void configureBindings() {
@@ -119,6 +129,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> {
                 double reduction = (-joystick.getRawAxis(3) + 1) / 2;
                 //SmartDashboard.putNumber("Speed %", reduction);
+                reduction = MathUtil.clamp(reduction, .2, 1);
 
                 if (fieldOrient)
                 {
@@ -194,15 +205,19 @@ public class RobotContainer {
             xbox.rightTrigger().and(manualOverride.negate()).whileFalse(
                 shooter.shoot("OFF")
                 .alongWith(stateMachine.SetState(3))
-                .alongWith(ledSubsystem.runPattern("SHOOT"))
+                .alongWith(ledSubsystem.runPattern("REST"))
             );
             
             //PASSING
             xbox.leftTrigger().and(manualOverride.negate()).onTrue(
-                intake.intake(false, "UNCHANGED")
-                .alongWith(shooter.shoot("LOW"))
+                shooter.shoot("LOW")
                 .alongWith(stateMachine.SetState(4))
                 .alongWith(ledSubsystem.runPattern("PASS"))
+            );
+            xbox.leftTrigger().and(manualOverride.negate()).onFalse(
+                shooter.shoot("OFF")
+                .alongWith(stateMachine.SetState(4))
+                .alongWith(ledSubsystem.runPattern("REST"))
             );
             
             //INTAKE WHILE SHOOT
@@ -216,11 +231,25 @@ public class RobotContainer {
                 intake.intake(false, "DOWN")
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(stateMachine.SetState(7))
-                .alongWith(ledSubsystem.runPattern("SHOOT"))
+                .alongWith(ledSubsystem.runPattern("REST"))
+            );
+             //INTAKE WHILE PASS
+            xbox.leftBumper().and(manualOverride.negate()).whileTrue(
+                intake.intake(true, "DOWN")
+                .alongWith(shooter.shoot("LOW"))
+                .alongWith(stateMachine.SetState(4))
+                .alongWith(ledSubsystem.runPattern("PASS"))
+                );
+            xbox.leftBumper().and(manualOverride.negate()).onFalse(
+                intake.intake(false, "DOWN")
+                .alongWith(shooter.shoot("OFF"))
+                .alongWith(stateMachine.SetState(4))
+                .alongWith(ledSubsystem.runPattern("REST"))
             );
 
-            xbox.a().onTrue(intake.testBoth(0, 10));
-            xbox.a().onFalse(intake.intake(false, "DOWN"));
+            //AGITATE
+            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 10));
+            xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
             
             intakeDown.onTrue(intake.testIntakePower(0));
             /*
@@ -247,18 +276,53 @@ public class RobotContainer {
                 System.out.println("Field Oriented: " + fieldOrient);
         })
             );
-            /*
+            
         //MANUAL OVERRIDE CONTROLS
-                    //INTAKING
+            //INTAKE SPINNER
             xbox.povRight().and(manualOverride).onTrue(
                 intake.testRotate(1)                
             );
             xbox.povLeft().and(manualOverride).onTrue(
                 intake.testRotate(-1)                
             );
-            leftStickMoved.and(manualOverride).whileTrue(
-                intake.testIntake(-xbox.getLeftY())
+            xbox.povLeft().and(manualOverride).onFalse(
+                intake.testRotate(0)
             );
+            xbox.povRight().and(manualOverride).onFalse(
+                intake.testRotate(0)
+            );
+            //INTAKE ARM ADJUST
+            xbox.povUp().and(manualOverride).onTrue(
+                intake.testIntakePower(-0.05)                
+            );
+            xbox.povDown().and(manualOverride).onTrue(
+                intake.testIntakePower(0.05)                  
+            );
+            xbox.povUp().and(manualOverride).onFalse(
+                intake.testIntakePower(0)
+            );
+            xbox.povDown().and(manualOverride).onFalse(
+                intake.testIntakePower(0)
+            );
+            //RESET ZERO
+            xbox.a().and(manualOverride).onTrue(
+                intake.Rezero()
+            );
+            //INDEXER AND FEEDER
+            xbox.x().and(manualOverride).onTrue(
+                infeed.testfeed(-0.5).alongWith(shooter.testShooters(22.4))
+            );
+            xbox.b().and(manualOverride).onTrue(
+                infeed.testfeed(0.5).alongWith(shooter.testShooters(-22.4))
+            );
+            xbox.b().and(manualOverride).onFalse(
+                infeed.testfeed(0).alongWith(shooter.stopShooterAuto())
+            );
+            xbox.x().and(manualOverride).onFalse(
+                infeed.testfeed(0).alongWith(shooter.stopShooterAuto())
+            );
+            
+            /*
                     //CLIMB
             xbox.povUp().and(manualOverride).onTrue(
                 climb.testClimbVoltage(1)              
@@ -266,8 +330,9 @@ public class RobotContainer {
             xbox.povDown().and(manualOverride).onTrue(
                 climb.testClimbVoltage(-1)              
             );
+            */
 
-        */
+        
             
             
 
@@ -301,19 +366,22 @@ public class RobotContainer {
 
     public void configurePathPlannerEventTriggers()
     {
-        new EventTrigger("intakedown").onTrue(intake.testIntake(10));
+        NamedCommands.registerCommand("intakedown", intake.testIntake(10));
+        NamedCommands.registerCommand("intake", intake.intake(true, "DOWN"));
+        NamedCommands.registerCommand("stopintake", intake.intake(false, "DOWN"));
+
         NamedCommands.registerCommand("shoot", shooter.shootAuto());
-        new EventTrigger("stopshoot").onTrue(shooter.shoot("STOP"));
+        NamedCommands.registerCommand("stopshoot", shooter.stopShooterAuto());
+
         NamedCommands.registerCommand("feed", infeed.feedAuto(true));
-        NamedCommands.registerCommand("stopshoot", shooter.shoot("STOP"));
-        //NamedCommands.registerCommand("ActivateLEDs", Commands.print("enabling leds"));
+        NamedCommands.registerCommand("stopfeed", infeed.feedAuto(false));
+
+        NamedCommands.registerCommand("ActivateLEDs", ledSubsystem.runPattern("AUTO"));
         //NamedCommands.registerCommand("climb", climb.climb("UP"));
         //new EventTrigger("climb").onTrue(Commands.print("Climbing"));
-        new EventTrigger("intake").onTrue(intake.intake(true, "DOWN"));
-        new EventTrigger("stopintake").onTrue(intake.intake(false, "DOWN"));
     }
 
     public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto("LeftAutoDepot");//chooser.getSelected();
+        return chooser.getSelected();
     }
 }

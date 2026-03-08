@@ -17,10 +17,6 @@ public class infeeder extends SubsystemBase{
     public Command testfeed(double powervolts) {
         return runOnce(() -> {
             Robot.feeder.set(powervolts);
-        });
-    }
-    public Command testindexer(double powervolts) {
-        return runOnce(() -> {
             Robot.indexer.set(powervolts);
         });
     }

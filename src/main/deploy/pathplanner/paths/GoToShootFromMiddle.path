@@ -3,57 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.700699001426534,
-        "y": 2.0877318116975756
+        "x": 2.5511126961483592,
+        "y": 0.9750071326676175
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.945814762074736,
-        "y": 2.038555965168482
+        "x": 4.297831669044222,
+        "y": 0.2892582025677609
       },
       "isLocked": false,
       "linkedName": "Endpoint2RightAuto"
     },
     {
       "anchor": {
-        "x": 5.953980028530669,
-        "y": 0.6256633380884444
+        "x": 7.713637660485022,
+        "y": 2.7734807417974334
       },
       "prevControl": {
-        "x": 6.243072834364912,
-        "y": 0.8485178906734466
-      },
-      "nextControl": {
-        "x": 5.755981513381829,
-        "y": 0.4730311396542525
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.430941512125534,
-        "y": 0.6256633380884444
-      },
-      "prevControl": {
-        "x": 3.8024201748613597,
-        "y": 0.1706730459518429
-      },
-      "nextControl": {
-        "x": 2.688714660275508,
-        "y": 1.5347492319262588
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.8507155635062613,
-        "y": 1.5281753130590334
-      },
-      "prevControl": {
-        "x": 2.9838429814063336,
-        "y": 1.3165693334571813
+        "x": 7.428987161198288,
+        "y": 0.15987161198288158
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,11 +30,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.9850746268656583,
+      "waypointRelativePos": 0.07249466950959377,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.8869936034115178,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0.0
     }
   ],
@@ -74,8 +42,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shoot",
-      "waypointRelativePos": 2.987179487179477,
+      "name": "intake",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "stopshoot",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -90,13 +64,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.88412400752207
+    "rotation": -94.63546342690259
   },
   "reversed": false,
   "folder": "RightAutoShoot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -132.455195620187
+    "rotation": 57.65850930879766
   },
   "useDefaultConstraints": true
 }

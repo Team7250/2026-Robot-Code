@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
@@ -42,6 +43,13 @@ public class Intake extends SubsystemBase {
         });
     }
 
+    public Command Rezero() {
+        return runOnce(() -> {
+                Robot.RaiseLower1.setPosition(0);
+                Robot.RaiseLower2.setPosition(0);
+            }
+        );
+    }
     public Command testBoth(double rotationVoltage, double position)
     {
         return runOnce(() -> {
