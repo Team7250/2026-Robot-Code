@@ -116,8 +116,8 @@ public class Shooter extends SubsystemBase {
         double radialVel = (robotVelField.getX() * unitToHub.getX()) + (robotVelField.getY() * unitToHub.getY());
         targetRPS = baseRps - (radialVel * dynamicRadialFudge);
 
-        // RE-ADDED: Driver reduction logic from throttle
         reduction = MathUtil.clamp((-Robot.joystick.getRawAxis(3) + 1) / 2, 0.2, 1.0);
+        
 
         // Dashboard Telemetry
         SmartDashboard.putNumber("Shooter/Target RPS", targetRPS);
@@ -125,6 +125,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putBoolean("Shooter/Is Moving Right", movingRight);
         SmartDashboard.putNumber("Shooter/Current Fudge", currentFudge);
         SmartDashboard.putNumber("Shooter/Reduction", reduction);
+        SmartDashboard.putNumber("Speed %", reduction);
     }
 
     public Command shoot(String mode) {
