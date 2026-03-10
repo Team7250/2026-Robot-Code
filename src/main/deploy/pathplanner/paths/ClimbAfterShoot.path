@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 2.412629695885508,
-        "y": 4.073940966010734
+        "y": 3.0
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.6970643601869093,
-        "y": 4.156393744519464
+        "y": 3.0824527785087303
       },
       "isLocked": true,
       "linkedName": "Endpoint1CenterAuto"
@@ -65,8 +65,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -80,7 +80,7 @@
   "folder": "CenterAutoClimb",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 25.0994795297494
   },
   "useDefaultConstraints": true
 }

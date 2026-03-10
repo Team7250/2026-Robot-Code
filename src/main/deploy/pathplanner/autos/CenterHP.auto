@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "stopintake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CentertoHP"
@@ -42,6 +48,12 @@
                 "type": "named",
                 "data": {
                   "name": "intakedown"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
                 }
               },
               {

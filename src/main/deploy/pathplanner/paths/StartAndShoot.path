@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 2.412629695885508,
-        "y": 4.073940966010734
+        "y": 3.0
       },
       "prevControl": {
         "x": 2.162632343031878,
-        "y": 4.075091429472833
+        "y": 3.001150463462099
       },
       "nextControl": null,
       "isLocked": true,
@@ -36,11 +36,16 @@
       "name": "intakedown",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakedown"
+        }
+      }
     },
     {
       "name": "shoot",
-      "waypointRelativePos": 0.8602941176470604,
+      "waypointRelativePos": 0.25601604278075407,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -51,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -60,7 +65,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 25.0994795297494
   },
   "reversed": false,
   "folder": "CenterAutoClimb",

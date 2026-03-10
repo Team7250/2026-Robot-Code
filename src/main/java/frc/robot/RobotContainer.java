@@ -231,7 +231,7 @@ public class RobotContainer {
                 intake.intake(false, "DOWN")
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(stateMachine.SetState(7))
-                .alongWith(ledSubsystem.runPattern("REST"))
+                .alongWith(ledSubsystem.runPattern("SHOOT"))
             );
              //INTAKE WHILE PASS
             xbox.leftBumper().and(manualOverride.negate()).whileTrue(
@@ -244,7 +244,7 @@ public class RobotContainer {
                 intake.intake(false, "DOWN")
                 .alongWith(shooter.shoot("OFF"))
                 .alongWith(stateMachine.SetState(4))
-                .alongWith(ledSubsystem.runPattern("REST"))
+                .alongWith(ledSubsystem.runPattern("PASS"))
             );
 
             //AGITATE

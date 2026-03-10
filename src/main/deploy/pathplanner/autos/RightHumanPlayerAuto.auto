@@ -51,6 +51,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.75
@@ -162,12 +168,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShoottoMid"
           }
         }
       ]

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 public class LEDSubsystem extends SubsystemBase {
   private static final int kPort = 9;
@@ -95,7 +96,7 @@ public class LEDSubsystem extends SubsystemBase {
           else if (pattern.equals("REST")) m_currentPattern = restpattern;
           else if (pattern.equals("PASS")) m_currentPattern = passpattern;
           else if (pattern.equals("INTAKE")) m_currentPattern = intakepattern;
-          else if (pattern.equals("SHOOT")) m_currentPattern = LEDPattern.steps(Map.of(0, Color.kDarkGreen, 0.5, Color.kWhite)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(30), Feet.of(FeetLength/150));
+          else if (pattern.equals("SHOOT")) m_currentPattern = LEDPattern.steps(Map.of(0, Color.kDarkGreen, 0.5, Color.kWhite)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(Shooter.shootspeed), Feet.of(FeetLength/150));
       });
   }
 

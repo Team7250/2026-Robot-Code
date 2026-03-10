@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4809272467953396,
-        "y": 0.9491298145528686
+        "x": 0.5326818830242506,
+        "y": 0.9232524964336677
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8751462925921722,
-        "y": 1.6198329243929237
+        "x": 0.9269009288210832,
+        "y": 1.5939556062737228
       },
       "isLocked": false,
       "linkedName": "Centertohpend"
@@ -34,14 +34,19 @@
   "eventMarkers": [
     {
       "name": "shoot",
-      "waypointRelativePos": 0.8709893048128359,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

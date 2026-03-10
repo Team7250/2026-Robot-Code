@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ActivateLEDs"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CentertoDepot"
@@ -17,6 +23,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "feed"
+          }
+        },
+        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -24,6 +42,12 @@
                 "type": "named",
                 "data": {
                   "name": "intakedown"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
                 }
               },
               {
@@ -138,6 +162,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopshoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopfeed"
           }
         }
       ]
