@@ -43,6 +43,12 @@
         {
           "type": "named",
           "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "stopintake"
           }
         },
@@ -140,12 +146,6 @@
           "type": "named",
           "data": {
             "name": "stopintake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "GoMidAfterShootLeft"
           }
         }
       ]

@@ -119,11 +119,11 @@ public class Robot extends TimedRobot {
         //configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
         //configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
 
-        configureMotors(shooter1, 0, 200, 0, true, false, 40, 0.02, 0.0092, 0.0, 0.05, 0.001, 0.0);
-        configureMotors(shooter2, 0, 200, 0, false, false, 40, 0.015, 0.0092, 0.0, 0.05, 0.005, 0.0);
+        configureMotors(shooter1, 0, 600, 0, true, false, 40, 0.02, 0.0092, 0.0, 0.05, 0.001, 0.0);
+        configureMotors(shooter2, 0, 600, 0, false, false, 40, 0.015, 0.0092, 0.0, 0.05, 0.005, 0.0);
 
-        configureMotors(RaiseLower1, 40, 80, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
-        configureMotors(RaiseLower2, 40, 80, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower1, 40, 40, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
+        configureMotors(RaiseLower2, 40, 40, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
         configureMotors(RotateIntake, 80, 160, 1600, false, false, 40, .25, .12, .01, 4.8, 0, .1);
 
         
@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
         //SmartDashboard.putString("Drivetrain Command", 
         //RobotContainer.drivetrain.getCurrentCommand() != null ? 
         //RobotContainer.drivetrain.getCurrentCommand().getName() : "none");
-        SmartDashboard.putNumber("Heartbeat", Timer.getFPGATimestamp());
+        //SmartDashboard.putNumber("Heartbeat", Timer.getFPGATimestamp());
     }
 
     @Override

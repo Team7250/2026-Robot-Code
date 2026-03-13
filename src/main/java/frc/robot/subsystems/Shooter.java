@@ -95,11 +95,17 @@ public class Shooter extends SubsystemBase {
         
         // Check if moving to driver's right (Red: +Y, Blue: -Y)
         boolean movingRight = isRed ? (vy > 0.1) : (vy < -0.1);
+        boolean movingLeft = isRed ? (vy < -0.1) : (vy > 0.1);
         
         double currentFudge = 0;
-        if (movingRight) {
+        if (movingRight && isRed) {
             vy *= RIGHT_SIDE_BIAS_SCALAR;
             currentFudge = RIGHT_SIDE_FUDGE_DEG; // Only apply fudge to the right
+        }
+        else if(movingLeft && !isRed)
+        {
+            vy *= RIGHT_SIDE_BIAS_SCALAR;
+            currentFudge = -RIGHT_SIDE_FUDGE_DEG - 2;
         }
         
         Translation2d compensatedVel = new Translation2d(vx, vy);
