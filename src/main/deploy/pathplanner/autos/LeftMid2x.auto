@@ -7,7 +7,19 @@
         {
           "type": "named",
           "data": {
+            "name": "stopintake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ActivateLEDs"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {

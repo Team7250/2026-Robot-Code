@@ -61,6 +61,7 @@ public class LEDSubsystem extends SubsystemBase {
   /*
   public Command runPattern(String pattern) {
     System.out.println(pattern);
+    
     if (pattern == "SHOOT") {
       return runOnce(() -> {LEDPattern.steps(Map.of(0, Color.kDarkGreen, 0.5, Color.kWhite)).atBrightness(Percent.of(brightness)).scrollAtAbsoluteSpeed(FeetPerSecond.of(Shooter.shootspeed / 30), Feet.of(FeetLength/150)).applyTo(m_buffer);});
     }

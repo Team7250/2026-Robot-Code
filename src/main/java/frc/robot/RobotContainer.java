@@ -88,7 +88,7 @@ public class RobotContainer {
 
     //Triggers
     public static Trigger manualOverride = xbox.start();
-    public static Trigger intakeDown = new Trigger(() -> Robot.RotateIntake.getPosition().getValueAsDouble() >= Intake.LOW);
+    //public static Trigger intakeDown = new Trigger(() -> Robot.RotateIntake.getPosition().getValueAsDouble() >= Intake.LOW);
 
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -251,7 +251,7 @@ public class RobotContainer {
             xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 10));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
             
-            intakeDown.onTrue(intake.testIntakePower(0));
+            //intakeDown.onTrue(intake.testIntakePower(0));
             /*
             //CLIMB DOWN
             xbox.povDown().and(manualOverride.negate()).onTrue(
@@ -359,7 +359,7 @@ public class RobotContainer {
         // Reset the field-centric heading on left bumper press.
         resetFieldCentricHeadingButton.onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        //drivetrain.registerTelemetry(logger::telemeterize);
 
         //drivetrain.resetPose(new Pose2d(new Translation2d(16.137, 7.690), new Rotation2d(Math.toRadians(180))));
     }

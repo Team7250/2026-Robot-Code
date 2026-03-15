@@ -49,10 +49,10 @@ public class Shooter extends SubsystemBase {
         new edu.wpi.first.math.controller.PIDController(6.0, 0, 0.2); 
 
     public Shooter() {
-        shooterVelocitiesMap.put(2.0, 46.0);
-        shooterVelocitiesMap.put(3.0, 50.0);
-        shooterVelocitiesMap.put(4.0, 58.0);
-        shooterVelocitiesMap.put(5.0, 62.0);
+        shooterVelocitiesMap.put(2.0, 48.0);
+        shooterVelocitiesMap.put(3.0, 52.0);
+        shooterVelocitiesMap.put(4.0, 59.0);
+        shooterVelocitiesMap.put(5.0, 63.0);
 
         headingPID.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -123,15 +123,18 @@ public class Shooter extends SubsystemBase {
         targetRPS = baseRps - (radialVel * dynamicRadialFudge);
 
         reduction = MathUtil.clamp((-Robot.joystick.getRawAxis(3) + 1) / 2, 0.2, 1.0);
+
+        Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+        Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
         
 
         // Dashboard Telemetry
-        SmartDashboard.putNumber("Shooter/Target RPS", targetRPS);
+        /*SmartDashboard.putNumber("Shooter/Target RPS", targetRPS);
         SmartDashboard.putNumber("Shooter/Target Heading", targetHeading.getDegrees());
         SmartDashboard.putBoolean("Shooter/Is Moving Right", movingRight);
         SmartDashboard.putNumber("Shooter/Current Fudge", currentFudge);
         SmartDashboard.putNumber("Shooter/Reduction", reduction);
-        SmartDashboard.putNumber("Speed %", reduction);
+        SmartDashboard.putNumber("Speed %", reduction);*/
     }
 
     public Command shoot(String mode) {
@@ -147,11 +150,9 @@ public class Shooter extends SubsystemBase {
                     .withRotationalRate(rotOutput)
                     .withDeadband(0.1));
                 
-                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
-                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+                
 
-                if(Math.abs(Robot.shooter1.getClosedLoopError(true).getValue()) < 5.0 && 
-                   Robot.shooter1.getVelocity(true).getValueAsDouble() > 25.0) {
+                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1)  {
                     infeeder.feed(true);
                 } else {
                     infeeder.feed(false);
@@ -161,8 +162,8 @@ public class Shooter extends SubsystemBase {
         }
         else if (mode.equals("LOW")) {
             return runOnce(() -> {
-                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(60));
-                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(60));
+                //Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(60));
+                //Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(60));
                 infeeder.feed(true);
             });
         }
