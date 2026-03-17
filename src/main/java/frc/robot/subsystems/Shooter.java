@@ -33,6 +33,7 @@ public class Shooter extends SubsystemBase {
     private final double BASE_RADIAL_FUDGE = 2.5; // higher = stronger
     private final double HIGH_SPEED_RADIAL_FUDGE = 15.0; 
     private final double FEEDER_DELAY = 0.08; 
+    private final double IDLESPEED = 30;
 
     // --- CALIBRATION ---
     // This ONLY applies when movingRight is true.
@@ -53,6 +54,8 @@ public class Shooter extends SubsystemBase {
         shooterVelocitiesMap.put(3.0, 52.0);
         shooterVelocitiesMap.put(4.0, 59.0);
         shooterVelocitiesMap.put(5.0, 63.0);
+
+        
 
         headingPID.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -124,8 +127,7 @@ public class Shooter extends SubsystemBase {
 
         reduction = MathUtil.clamp((-Robot.joystick.getRawAxis(3) + 1) / 2, 0.2, 1.0);
 
-        Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
-        Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+        
         
 
         // Dashboard Telemetry
@@ -150,9 +152,10 @@ public class Shooter extends SubsystemBase {
                     .withRotationalRate(rotOutput)
                     .withDeadband(0.1));
                 
-                
+                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
 
-                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1)  {
+                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1 && Math.abs(Robot.shooter1.getClosedLoopError(true).getValueAsDouble()) < 3)  {
                     infeeder.feed(true);
                 } else {
                     infeeder.feed(false);
@@ -162,8 +165,8 @@ public class Shooter extends SubsystemBase {
         }
         else if (mode.equals("LOW")) {
             return runOnce(() -> {
-                //Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(60));
-                //Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(60));
+                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+                Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
                 infeeder.feed(true);
             });
         }
@@ -171,8 +174,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stopShooter() {
-        Robot.shooter1.set(0); 
-        Robot.shooter2.set(0); 
+        Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(IDLESPEED)); 
+        Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(IDLESPEED)); 
         infeeder.feed(false);
     }
 
@@ -192,8 +195,8 @@ public class Shooter extends SubsystemBase {
 
     public Command stopShooterAuto() {
         return runOnce(() -> {
-            Robot.shooter1.set(0);
-            Robot.shooter2.set(0);
+            Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(IDLESPEED));
+            Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(IDLESPEED));
         });
     }
 
