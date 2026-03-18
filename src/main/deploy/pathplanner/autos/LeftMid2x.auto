@@ -29,12 +29,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "MidtoShoot"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "shoot"
@@ -123,13 +117,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShoottoMidLeft"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MidtoShoot"
+            "pathName": "ShoottoMidleft"
           }
         },
         {
