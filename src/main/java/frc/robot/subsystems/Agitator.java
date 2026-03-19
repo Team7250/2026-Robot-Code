@@ -1,21 +1,28 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class Climb extends SubsystemBase {
+public class Agitator extends SubsystemBase {
     
-    int UPPOSITION = 50;
-    int DOWNPOSITION = 0;
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    private final Servo actuator;
     
     
     String io;
-    public Climb() {
+    public Agitator() {
+        actuator = new Servo(4);
+        
+    }
+
+    public Command setPosition(double position)
+    {
+        return runOnce(() -> {
+            actuator.set(position);
+        });
     }
     /*
     //test functions for climb, one for positional and one for voltage

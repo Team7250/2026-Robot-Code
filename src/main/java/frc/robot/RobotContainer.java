@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Agitator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -78,11 +78,11 @@ public class RobotContainer {
     //Subsystems
     public static Intake intake = new Intake();
     public static Shooter shooter = new Shooter();
-    public static Climb climb = new Climb();
+    public static Agitator agitator = new Agitator();
     public static StateMachine stateMachine = new StateMachine();
     public static infeeder infeed = new infeeder();
     public static LEDSubsystem ledSubsystem = new LEDSubsystem();
-    public static int ClimbPercent = 0;
+    public static int AgitatorPercent = 0;
 
     public final SendableChooser<Command> chooser;
 
@@ -250,6 +250,9 @@ public class RobotContainer {
             //AGITATE
             xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 10));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
+
+            //xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.99).alongWith(Commands.print("actuating")));
+            //xbox.back().and(manualOverride.negate()).onFalse(agitator.setPosition(0.01).alongWith(Commands.print("unactuating")));
             
             //intakeDown.onTrue(intake.testIntakePower(0));
             /*
