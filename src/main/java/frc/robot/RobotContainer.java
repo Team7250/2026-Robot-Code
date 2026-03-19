@@ -251,8 +251,8 @@ public class RobotContainer {
             xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 10));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
 
-            //xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.99).alongWith(Commands.print("actuating")));
-            //xbox.back().and(manualOverride.negate()).onFalse(agitator.setPosition(0.01).alongWith(Commands.print("unactuating")));
+            xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.075).alongWith(Commands.print("actuating")));
+            xbox.back().and(manualOverride.negate()).onFalse(agitator.setPosition(0).alongWith(Commands.print("unactuating")));
             
             //intakeDown.onTrue(intake.testIntakePower(0));
             /*

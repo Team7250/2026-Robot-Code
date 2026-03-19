@@ -10,18 +10,21 @@ import frc.robot.RobotContainer;
 public class Agitator extends SubsystemBase {
     
     private final Servo actuator;
-    
+    private final Servo actuator2;
     
     String io;
     public Agitator() {
-        actuator = new Servo(4);
-        
+        actuator = new Servo(3);
+        actuator2 = new Servo(4);
+        actuator.setBoundsMicroseconds(2000, 1501, 1500, 1499, 1000);
+        actuator2.setBoundsMicroseconds(2000, 1501, 1500, 1499, 1000);
     }
-
+    
     public Command setPosition(double position)
     {
         return runOnce(() -> {
             actuator.set(position);
+            actuator2.set(position);
         });
     }
     /*
