@@ -155,7 +155,7 @@ public class Shooter extends SubsystemBase {
                 Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
                 Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
 
-                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1 && Math.abs(Robot.shooter1.getClosedLoopError(true).getValueAsDouble()) < 3)  {
+                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1 && Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - targetRPS) < 3)  {
                     infeeder.feed(true);
                 } else {
                     infeeder.feed(false);

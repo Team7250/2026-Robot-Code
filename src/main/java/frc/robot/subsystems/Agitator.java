@@ -11,13 +11,32 @@ public class Agitator extends SubsystemBase {
     
     private final Servo actuator;
     private final Servo actuator2;
+
+    final double HOME = 0.025;
+    final double OUT = 0.25;
+    final double EXTENSIONTIME = 500;
+    final double OFFSETFROMOTHER = 0.05;
     
     String io;
     public Agitator() {
-        actuator = new Servo(3);
-        actuator2 = new Servo(4);
+        actuator = new Servo(2);
+        actuator2 = new Servo(1);
         actuator.setBoundsMicroseconds(2000, 1501, 1500, 1499, 1000);
         actuator2.setBoundsMicroseconds(2000, 1501, 1500, 1499, 1000);
+    }
+    int i = 0;
+    @Override
+    public void periodic()
+    {
+        if(i % EXTENSIONTIME < EXTENSIONTIME / 2)
+        {
+            setPositionLocal(HOME);
+        }
+        else
+        {
+            setPositionLocal(OUT);
+        }
+        i++;
     }
     
     public Command setPosition(double position)
@@ -26,6 +45,12 @@ public class Agitator extends SubsystemBase {
             actuator.set(position);
             actuator2.set(position);
         });
+    }
+
+    public void setPositionLocal(double position)
+    {
+        actuator.set(position + OFFSETFROMOTHER);
+        actuator2.set(position);
     }
     /*
     //test functions for climb, one for positional and one for voltage

@@ -205,7 +205,7 @@ public class RobotContainer {
             xbox.rightTrigger().and(manualOverride.negate()).whileFalse(
                 shooter.shoot("OFF")
                 .alongWith(stateMachine.SetState(3))
-                .alongWith(ledSubsystem.runPattern("REST"))
+                .alongWith(ledSubsystem.runPattern("SHOOT"))
             );
             
             //PASSING
@@ -217,7 +217,7 @@ public class RobotContainer {
             xbox.leftTrigger().and(manualOverride.negate()).onFalse(
                 shooter.shoot("OFF")
                 .alongWith(stateMachine.SetState(4))
-                .alongWith(ledSubsystem.runPattern("REST"))
+                .alongWith(ledSubsystem.runPattern("PASS"))
             );
             
             //INTAKE WHILE SHOOT
@@ -248,11 +248,11 @@ public class RobotContainer {
             );
 
             //AGITATE
-            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 10));
+            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(-.25, 8.75));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
 
-            xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.075).alongWith(Commands.print("actuating")));
-            xbox.back().and(manualOverride.negate()).onFalse(agitator.setPosition(0).alongWith(Commands.print("unactuating")));
+            //xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.075).alongWith(Commands.print("actuating")));
+            //xbox.back().and(manualOverride.negate()).onFalse(agitator.setPosition(0).alongWith(Commands.print("unactuating")));
             
             //intakeDown.onTrue(intake.testIntakePower(0));
             /*
