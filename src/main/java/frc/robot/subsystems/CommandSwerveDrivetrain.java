@@ -237,7 +237,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void updateVision() {
-        String[] limelights = {"limelight-front", "limelight-side"};
+        String[] limelights = {"limelight-front", "limelight-side", "limelight-right"};
 
         for (String name : limelights) {
             // 1. Get the estimate using MegaTag2
@@ -246,6 +246,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             var result = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
             // 2. Filter: Only process if tags are visible
             if (result.tagCount > 0) {
+                
                 
                 /* * DYNAMIC ACCURACY CALCULATION
                 * We increase the 'uncertainty' (StdDev) based on distance.

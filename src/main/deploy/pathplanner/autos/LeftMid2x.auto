@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "stopintake"
+            "name": "intake"
           }
         },
         {
@@ -117,7 +117,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShoottoMidleft"
+            "pathName": "ShoottoMidLeft"
           }
         },
         {

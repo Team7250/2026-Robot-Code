@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import java.util.Set;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -25,6 +26,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -248,7 +251,7 @@ public class RobotContainer {
             );
 
             //AGITATE
-            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(-.25, 8.75));
+            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 8.75));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
 
             //xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.075).alongWith(Commands.print("actuating")));
@@ -369,7 +372,7 @@ public class RobotContainer {
 
     public void configurePathPlannerEventTriggers()
     {
-        NamedCommands.registerCommand("intakedown", intake.testIntake(10));
+        NamedCommands.registerCommand("intakedown", intake.testIntake(8.75));
         NamedCommands.registerCommand("intake", intake.intake(true, "DOWN"));
         NamedCommands.registerCommand("stopintake", intake.intake(false, "DOWN"));
 
@@ -382,6 +385,65 @@ public class RobotContainer {
         NamedCommands.registerCommand("ActivateLEDs", ledSubsystem.runPattern("AUTO"));
         //NamedCommands.registerCommand("climb", climb.climb("UP"));
         //new EventTrigger("climb").onTrue(Commands.print("Climbing"));
+    }
+
+    public boolean isHubActive() {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        // If we have no alliance, we cannot be enabled, therefore no hub.
+        if (alliance.isEmpty()) {
+            return false;
+        }
+        // Hub is always enabled in autonomous.
+        if (DriverStation.isAutonomousEnabled()) {
+            return true;
+        }
+        // At this point, if we're not teleop enabled, there is no hub.
+        if (!DriverStation.isTeleopEnabled()) {
+            return false;
+        }
+
+        // We're teleop enabled, compute.
+        double matchTime = DriverStation.getMatchTime();
+        String gameData = DriverStation.getGameSpecificMessage();
+        // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
+        if (gameData.isEmpty()) {
+            return true;
+        }
+        boolean redInactiveFirst = false;
+        switch (gameData.charAt(0)) {
+            case 'R' -> redInactiveFirst = true;
+            case 'B' -> redInactiveFirst = false;
+            default -> {
+            // If we have invalid game data, assume hub is active.
+            return true;
+            }
+        }
+
+        // Shift was is active for blue if red won auto, or red if blue won auto.
+        boolean shift1Active = switch (alliance.get()) {
+            case Red -> !redInactiveFirst;
+            case Blue -> redInactiveFirst;
+        };
+
+        if (matchTime > 130) {
+            // Transition shift, hub is active.
+            return true;
+        } else if (matchTime > 105) {
+            // Shift 1
+            return shift1Active;
+        } else if (matchTime > 80) {
+            // Shift 2
+            return !shift1Active;
+        } else if (matchTime > 55) {
+            // Shift 3
+            return shift1Active;
+        } else if (matchTime > 30) {
+            // Shift 4
+            return !shift1Active;
+        } else {
+            // End game, hub always active.
+            return true;
+        }
     }
 
     public Command getAutonomousCommand() {
