@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
@@ -13,7 +13,7 @@ public class Intake extends SubsystemBase {
     double HIGH = 0;
      //use motion magic to control the position
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-
+    final MotionMagicVelocityDutyCycle velocity = new MotionMagicVelocityDutyCycle(0);
 
     boolean rotate = false;
     String raiselower;
@@ -36,10 +36,10 @@ public class Intake extends SubsystemBase {
         });
     }
 
-    public Command testRotate(double rotationVoltage)
+    public Command testRotate(double rps)
     {
         return runOnce(() -> {
-            Robot.RotateIntake.set(rotationVoltage);
+            Robot.RotateIntake.setControl(velocity.withVelocity(rps));
         });
     }
 
@@ -50,11 +50,11 @@ public class Intake extends SubsystemBase {
             }
         );
     }
-    public Command testBoth(double rotationVoltage, double position)
+    public Command testBoth(double rps, double position)
     {
         return runOnce(() -> {
             Robot.RaiseLower1.setControl(m_request.withPosition(position));
-            Robot.RotateIntake.set(rotationVoltage);
+            Robot.RotateIntake.setControl(velocity.withVelocity(rps));
         });
     }
 
@@ -86,7 +86,7 @@ public class Intake extends SubsystemBase {
         }).andThen(() -> {
             if(rotate)
             {
-                Robot.RotateIntake.set(-1);
+                Robot.RotateIntake.setControl(velocity.withVelocity(5));
             }
         });
     }
