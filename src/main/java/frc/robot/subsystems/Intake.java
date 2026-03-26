@@ -9,7 +9,7 @@ import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
-    public static double LOW = 15;
+    public static double LOW = 15.25;
     double HIGH = 0;
      //use motion magic to control the position
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);

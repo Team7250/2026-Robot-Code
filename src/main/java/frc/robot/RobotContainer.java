@@ -114,6 +114,7 @@ public class RobotContainer {
         chooser.addOption("CenterToBoth", AutoBuilder.buildAuto("CenterDepotandHP"));
         chooser.addOption("CenterToDepot", AutoBuilder.buildAuto("CenterDepot"));
         chooser.addOption("CenterJustShoot", AutoBuilder.buildAuto("CenterAutoClimb"));
+        chooser.addOption("TEST", AutoBuilder.buildAuto("NewAuto"));
         
         SmartDashboard.putData("Auto", chooser);
         
@@ -251,7 +252,7 @@ public class RobotContainer {
             );
 
             //AGITATE
-            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(0, 8.75));
+            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(-1, 8.75));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
 
             //xbox.back().and(manualOverride.negate()).onTrue(agitator.setPosition(0.075).alongWith(Commands.print("actuating")));
@@ -372,7 +373,7 @@ public class RobotContainer {
 
     public void configurePathPlannerEventTriggers()
     {
-        NamedCommands.registerCommand("intakedown", intake.testIntake(8.75));
+        NamedCommands.registerCommand("intakedown", intake.testBoth(-1, 8.75));
         NamedCommands.registerCommand("intake", intake.intake(true, "DOWN"));
         NamedCommands.registerCommand("stopintake", intake.intake(false, "DOWN"));
 
@@ -381,6 +382,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("feed", infeed.feedAuto(true));
         NamedCommands.registerCommand("stopfeed", infeed.feedAuto(false));
+        NamedCommands.registerCommand("reversefeed", infeed.testindexer(1));
 
         NamedCommands.registerCommand("ActivateLEDs", ledSubsystem.runPattern("AUTO"));
         //NamedCommands.registerCommand("climb", climb.climb("UP"));

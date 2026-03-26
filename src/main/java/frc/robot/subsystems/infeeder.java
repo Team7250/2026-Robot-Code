@@ -20,6 +20,11 @@ public class infeeder extends SubsystemBase{
             Robot.indexer.set(powervolts);
         });
     }
+    public Command testindexer(double powervolts) {
+        return runOnce(() -> {
+            Robot.indexer.set(powervolts);
+        });
+    }
     public static void feed(boolean on) {
         if(on)
         {
