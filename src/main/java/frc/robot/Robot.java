@@ -125,9 +125,10 @@ public class Robot extends TimedRobot {
 
         configureMotors(RaiseLower1, 60, 40, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
         configureMotors(RaiseLower2, 60, 40, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
-        configureMotors(RotateIntake, 80, 20, 6000, true, false, 40, 0.04, .0135, 0, 0.05, 0, .001);
+        configureMotors(RotateIntake, 0, 1000, 6000, true, false, 40, 0.0525, .00877, 0.0001, 0.04, 0, 0);
 
-        
+        configureMotors(feeder, 0, 1000, 6000, false, false, 40, 0.013, 0.00865, 0.0001, 0.04, 0, 0);
+        configureMotors(indexer, 0, 1000, 6000, true, false, 40, 0.02, 0.008573, 0.000, 0.04, 0, 0);
         
     }
 

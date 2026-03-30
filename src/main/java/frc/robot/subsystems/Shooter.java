@@ -150,12 +150,12 @@ public class Shooter extends SubsystemBase {
                     .withVelocityX(-Robot.joystick.getRawAxis(1) * RobotContainer.MaxSpeed * reduction * 0.5)
                     .withVelocityY(-Robot.joystick.getRawAxis(0) * RobotContainer.MaxSpeed * reduction * 0.5)
                     .withRotationalRate(rotOutput)
-                    .withDeadband(0.1));
+                    .withDeadband(0.2));
                 
                 Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
                 Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
 
-                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1 && Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - targetRPS) < 3)  {
+                if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1 && Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - targetRPS) < 10)  {
                     infeeder.feed(true);
                 } else {
                     infeeder.feed(false);

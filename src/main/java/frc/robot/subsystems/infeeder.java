@@ -11,28 +11,37 @@ import frc.robot.Robot;
 
 public class infeeder extends SubsystemBase{
 
-    static VoltageOut vIndexer = new VoltageOut(Volts.of(-8));
-    static VoltageOut vFeeder = new VoltageOut(Volts.of(-9));
     final static MotionMagicVelocityDutyCycle velocity = new MotionMagicVelocityDutyCycle(0);
     
         //testcommands, we need to map buttons to them
         public Command testfeed(double rps) {
             return runOnce(() -> {
-                Robot.feeder.setControl(velocity.withVelocity(rps));
-                Robot.indexer.setControl(velocity.withVelocity(rps));
+                if (rps != 0) {
+                    Robot.feeder.setControl(velocity.withVelocity(rps));
+                    Robot.indexer.setControl(velocity.withVelocity(rps));
+                }
+                else {
+                    Robot.feeder.set(0);
+                    Robot.indexer.set(0);
+                }
             });
         }
         public Command testindexer(double rps) {
             return runOnce(() -> {
+                if (rps != 0) {
                 Robot.indexer.setControl(velocity.withVelocity(rps));
+                }
+                else {
+                    Robot.indexer.set(0);
+                }
             });
         }
         public static void feed(boolean on) {
             if(on)
             {
                 
-                Robot.feeder.setControl(velocity.withVelocity(6));
-                Robot.indexer.setControl(velocity.withVelocity(5));
+                Robot.feeder.setControl(velocity.withVelocity(60));
+                Robot.indexer.setControl(velocity.withVelocity(50));
         }
         else
         {
@@ -45,8 +54,8 @@ public class infeeder extends SubsystemBase{
             if(on)
             {
                 
-                Robot.feeder.setControl(velocity.withVelocity(6));
-                Robot.indexer.setControl(velocity.withVelocity(5));
+                Robot.feeder.setControl(velocity.withVelocity(100));
+                Robot.indexer.setControl(velocity.withVelocity(100));
             }
             else
             {

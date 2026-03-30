@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -119,7 +120,7 @@ public class RobotContainer {
         var followerControl = new Follower(Robot.RaiseLower1.getDeviceID(), MotorAlignmentValue.Opposed);
         Robot.RaiseLower2.setControl(followerControl);
 
-        SmartDashboard.putData(Telemetry.m_field);
+        //SmartDashboard.putData(Telemetry.m_field);
 
         ledSubsystem.on();
 
@@ -158,6 +159,17 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
+
+        //SysID
+        /*
+        xbox.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        xbox.x().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        xbox.a().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        xbox.b().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        */
+
+
+        
 
         //brakes
         //brakeButton.whileTrue(drivetrain.applyRequest(() -> brake));
@@ -203,7 +215,7 @@ public class RobotContainer {
                 .alongWith(ledSubsystem.runPattern("SHOOT"))
             );
 
-            xbox.rightTrigger().and(manualOverride.negate()).whileFalse(
+            xbox.rightTrigger().and(manualOverride.negate()).onFalse(
                 shooter.shoot("OFF")
                 .alongWith(stateMachine.SetState(3))
                 .alongWith(ledSubsystem.runPattern("SHOOT"))
@@ -249,7 +261,7 @@ public class RobotContainer {
             );
 
             //AGITATE
-            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(-1, 8.75));
+            xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(60, 8.75));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
 
            
@@ -283,10 +295,10 @@ public class RobotContainer {
         //MANUAL OVERRIDE CONTROLS
             //INTAKE SPINNER
             xbox.povRight().and(manualOverride).onTrue(
-                intake.testRotate(1)                
+                intake.testRotate(10)                
             );
             xbox.povLeft().and(manualOverride).onTrue(
-                intake.testRotate(-1)                
+                intake.testRotate(-10)                
             );
             xbox.povLeft().and(manualOverride).onFalse(
                 intake.testRotate(0)
@@ -313,10 +325,10 @@ public class RobotContainer {
             );
             //INDEXER AND FEEDER
             xbox.x().and(manualOverride).onTrue(
-                infeed.testfeed(-0.5).alongWith(shooter.testShooters(22.4))
+                infeed.testfeed(-10).alongWith(shooter.testShooters(22.4))
             );
             xbox.b().and(manualOverride).onTrue(
-                infeed.testfeed(0.5).alongWith(shooter.testShooters(-22.4))
+                infeed.testfeed(10).alongWith(shooter.testShooters(-22.4))
             );
             xbox.b().and(manualOverride).onFalse(
                 infeed.testfeed(0).alongWith(shooter.stopShooterAuto())
@@ -369,7 +381,7 @@ public class RobotContainer {
 
     public void configurePathPlannerEventTriggers()
     {
-        NamedCommands.registerCommand("intakedown", intake.testBoth(-1, 8.75));
+        NamedCommands.registerCommand("intakedown", intake.testBoth(100, 8.75));
         NamedCommands.registerCommand("intake", intake.intake(true, "DOWN"));
         NamedCommands.registerCommand("stopintake", intake.intake(false, "DOWN"));
 
@@ -378,7 +390,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("feed", infeed.feedAuto(true));
         NamedCommands.registerCommand("stopfeed", infeed.feedAuto(false));
-        NamedCommands.registerCommand("reversefeed", infeed.testindexer(1));
+        NamedCommands.registerCommand("reversefeed", infeed.testindexer(-5));
 
         NamedCommands.registerCommand("ActivateLEDs", ledSubsystem.runPattern("AUTO"));
         //NamedCommands.registerCommand("climb", climb.climb("UP"));

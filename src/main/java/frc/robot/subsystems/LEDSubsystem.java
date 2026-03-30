@@ -47,10 +47,13 @@ public class LEDSubsystem extends SubsystemBase {
     //setDefaultCommand(runPattern("REST"));
   }
 
+  private int ledTick = 0;
   @Override
   public void periodic() {
-    m_currentPattern.applyTo(m_buffer);
-    m_led.setData(m_buffer);
+    if (ledTick++ % 3 == 0) {
+        m_currentPattern.applyTo(m_buffer);
+        m_led.setData(m_buffer);
+    }
   }
 
   /**

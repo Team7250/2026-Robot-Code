@@ -39,7 +39,12 @@ public class Intake extends SubsystemBase {
     public Command testRotate(double rps)
     {
         return runOnce(() -> {
-            Robot.RotateIntake.setControl(velocity.withVelocity(rps));
+            if (rps != 0) {
+               Robot.RotateIntake.setControl(velocity.withVelocity(rps));
+            }
+            else {
+                Robot.RotateIntake.set(0); 
+            }
         });
     }
 
@@ -53,8 +58,13 @@ public class Intake extends SubsystemBase {
     public Command testBoth(double rps, double position)
     {
         return runOnce(() -> {
-            Robot.RaiseLower1.setControl(m_request.withPosition(position));
-            Robot.RotateIntake.setControl(velocity.withVelocity(rps));
+            if (rps != 0) {
+                Robot.RaiseLower1.setControl(m_request.withPosition(position));
+                Robot.RotateIntake.setControl(velocity.withVelocity(rps));
+            }
+            else {
+                Robot.RotateIntake.set(0); 
+            }
         });
     }
 
@@ -86,7 +96,7 @@ public class Intake extends SubsystemBase {
         }).andThen(() -> {
             if(rotate)
             {
-                Robot.RotateIntake.setControl(velocity.withVelocity(5));
+                Robot.RotateIntake.setControl(velocity.withVelocity(100));
             }
         });
     }

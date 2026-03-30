@@ -115,8 +115,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             },
 
             new PPHolonomicDriveController(
-                new PIDConstants(1.85, 0, 0.02), // Translation PID
-                new PIDConstants(1.4, 0.0, 0.0)  // Rotation PID
+                new PIDConstants(4.45, 0, 0.0), // Translation PID
+                new PIDConstants(5, 0.0, 0.0)  // Rotation PID
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
@@ -240,6 +240,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         String[] limelights = {"limelight-front", "limelight-side", "limelight-right"};
 
         for (String name : limelights) {
+            if (!LimelightHelpers.getTV(name)) continue;
             // 1. Get the estimate using MegaTag2
             LimelightHelpers.SetRobotOrientation(name, 
                 getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
@@ -305,6 +306,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
+    private int visionTick = 0;
     @Override
     public void periodic() {
         /*
@@ -325,7 +327,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        updateVision();
+        if (visionTick++ % 5 == 0) {
+            updateVision();
+        }
     }
 
     private void startSimThread() {
