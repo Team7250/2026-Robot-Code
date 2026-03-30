@@ -115,8 +115,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             },
 
             new PPHolonomicDriveController(
-                new PIDConstants(4.45, 0, 0.0), // Translation PID
-                new PIDConstants(5, 0.0, 0.0)  // Rotation PID
+                new PIDConstants(5, 0, 0.05), // Translation PID
+                new PIDConstants(8, 0.0, 0.05)  // Rotation PID
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
