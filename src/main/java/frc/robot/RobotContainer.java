@@ -60,6 +60,7 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
+    public static double allianceShiftTime = 0;
         
     @SuppressWarnings("unused")
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -138,7 +139,8 @@ public class RobotContainer {
                     return drive
                     .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
                     .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
-                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                    .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction)
+                    .withRotationalDeadband(.25);
                 }
                 else
                 {
@@ -260,6 +262,14 @@ public class RobotContainer {
                 .alongWith(ledSubsystem.runPattern("PASS"))
             );
 
+            //FLOOR PASS
+            xbox.povDown().and(manualOverride.negate()).onTrue(
+                intake.testRotate(-100)
+            );
+            xbox.povDown().and(manualOverride.negate()).onFalse(
+                intake.stopRoller()
+            );
+
             //AGITATE
             xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(60, 8.75));
             xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
@@ -301,10 +311,10 @@ public class RobotContainer {
                 intake.testRotate(-10)                
             );
             xbox.povLeft().and(manualOverride).onFalse(
-                intake.testRotate(0)
+                intake.stopRoller()
             );
             xbox.povRight().and(manualOverride).onFalse(
-                intake.testRotate(0)
+                intake.stopRoller()
             );
             //INTAKE ARM ADJUST
             xbox.povUp().and(manualOverride).onTrue(
@@ -397,7 +407,7 @@ public class RobotContainer {
         //new EventTrigger("climb").onTrue(Commands.print("Climbing"));
     }
 
-    public boolean isHubActive() {
+    public static boolean isHubActive() {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         // If we have no alliance, we cannot be enabled, therefore no hub.
         if (alliance.isEmpty()) {
@@ -437,21 +447,27 @@ public class RobotContainer {
 
         if (matchTime > 130) {
             // Transition shift, hub is active.
+            allianceShiftTime = matchTime - 130;
             return true;
         } else if (matchTime > 105) {
             // Shift 1
+            allianceShiftTime = matchTime - 105;
             return shift1Active;
         } else if (matchTime > 80) {
             // Shift 2
+            allianceShiftTime = matchTime - 80;
             return !shift1Active;
         } else if (matchTime > 55) {
             // Shift 3
+            allianceShiftTime = matchTime - 55;
             return shift1Active;
         } else if (matchTime > 30) {
             // Shift 4
+            allianceShiftTime = matchTime - 30;
             return !shift1Active;
         } else {
             // End game, hub always active.
+            allianceShiftTime = matchTime;
             return true;
         }
     }

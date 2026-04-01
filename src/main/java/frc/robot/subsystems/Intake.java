@@ -48,6 +48,13 @@ public class Intake extends SubsystemBase {
         });
     }
 
+    public Command stopRoller()
+    {
+        return runOnce(() -> {
+            Robot.RotateIntake.set(0);
+        });
+    }
+
     public Command Rezero() {
         return runOnce(() -> {
                 Robot.RaiseLower1.setPosition(0);
@@ -96,7 +103,7 @@ public class Intake extends SubsystemBase {
         }).andThen(() -> {
             if(rotate)
             {
-                Robot.RotateIntake.setControl(velocity.withVelocity(100));
+                Robot.RotateIntake.setControl(velocity.withVelocity(125));
             }
         });
     }

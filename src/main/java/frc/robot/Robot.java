@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
-    // debounce
+    public static int index = 0;
    
 
     /* log and replay timestamp and joystick data */
@@ -128,15 +128,19 @@ public class Robot extends TimedRobot {
         configureMotors(RotateIntake, 0, 1000, 6000, true, false, 40, 0.0525, .00877, 0.0001, 0.04, 0, 0);
 
         configureMotors(feeder, 0, 1000, 6000, false, false, 40, 0.013, 0.00865, 0.0001, 0.04, 0, 0);
-        configureMotors(indexer, 0, 1000, 6000, true, false, 40, 0.02, 0.008573, 0.000, 0.04, 0, 0);
+        configureMotors(indexer, 0, 1000, 6000, true, false, 60, 0.02, 0.008573, 0.000, 0.04, 0, 0);
         
     }
 
     @Override
     public void robotPeriodic() {
         //m_timeAndJoystickReplay.update();
+        index += 1;
         CommandScheduler.getInstance().run();
-        
+        if (index % 5 == 0) {
+            SmartDashboard.putNumber("allianceShiftTime", Math.ceil(RobotContainer.allianceShiftTime*10)/10);
+            SmartDashboard.putBoolean("allianceShiftState", RobotContainer.isHubActive());
+        }
         //SmartDashboard.putString("Drivetrain Command", 
         //RobotContainer.drivetrain.getCurrentCommand() != null ? 
         //RobotContainer.drivetrain.getCurrentCommand().getName() : "none");

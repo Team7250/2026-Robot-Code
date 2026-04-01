@@ -69,9 +69,40 @@
                 }
               },
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.25
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
                 "type": "named",
                 "data": {
-                  "name": "reversefeed"
+                  "name": "feed"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakedown"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopintake"
                 }
               },
               {
@@ -100,12 +131,6 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "shoot"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 1.0
@@ -118,9 +143,40 @@
                 }
               },
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.25
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
                 "type": "named",
                 "data": {
-                  "name": "reversefeed"
+                  "name": "feed"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakedown"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopintake"
                 }
               },
               {
@@ -185,12 +241,6 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "reversefeed"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.25
@@ -216,12 +266,6 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "shoot"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 1.0
@@ -231,12 +275,6 @@
                 "type": "named",
                 "data": {
                   "name": "stopintake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "reversefeed"
                 }
               },
               {
