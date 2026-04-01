@@ -132,7 +132,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> {
                 double reduction = (-joystick.getRawAxis(3) + 1) / 2;
                 //SmartDashboard.putNumber("Speed %", reduction);
-                reduction = MathUtil.clamp(reduction, .2, 1);
+                reduction = MathUtil.clamp(reduction, .25, 1);
 
                 if (fieldOrient)
                 {
@@ -140,7 +140,8 @@ public class RobotContainer {
                     .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
                     .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
                     .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction)
-                    .withRotationalDeadband(.25);
+                    .withDeadband(.6)
+                    .withRotationalDeadband(1);
                 }
                 else
                 {

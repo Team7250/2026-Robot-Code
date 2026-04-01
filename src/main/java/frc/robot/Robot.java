@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -120,15 +121,15 @@ public class Robot extends TimedRobot {
         //configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
         //configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
 
-        configureMotors(shooter1, 0, 1000, 5000, true, false, 40, 0.02, 0.0092, 0.0, 0.05, 0.001, 0.0);
-        configureMotors(shooter2, 0, 1000, 5000, false, false, 40, 0.015, 0.0092, 0.0, 0.05, 0.005, 0.0);
+        configureMotors(shooter1, 0, 1000, 5000, true, false, 40, false, 0.02, 0.0092, 0.0, 0.05, 0.001, 0.0);
+        configureMotors(shooter2, 0, 1000, 5000, false, false, 40, false, 0.015, 0.0092, 0.0, 0.05, 0.005, 0.0);
 
-        configureMotors(RaiseLower1, 60, 40, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
-        configureMotors(RaiseLower2, 60, 40, 6400, false, true, 40, .25, .12, .01, 4.8, 0, .1);
-        configureMotors(RotateIntake, 0, 1000, 6000, true, false, 40, 0.0525, .00877, 0.0001, 0.04, 0, 0);
+        configureMotors(RaiseLower1, 60, 150, 300, false, true, 60, true, .2, .12, .01, 1, 0, 0.15);
+        configureMotors(RaiseLower2, 60, 150, 300, false, true, 60, true, .2, .12, .01, 1, 0, 0.15);
+        configureMotors(RotateIntake, 0, 1000, 6000, true, false, 40, false, 0.0525, .00877, 0.0001, 0.04, 0, 0);
 
-        configureMotors(feeder, 0, 1000, 6000, false, false, 40, 0.013, 0.00865, 0.0001, 0.04, 0, 0);
-        configureMotors(indexer, 0, 1000, 6000, true, false, 60, 0.02, 0.008573, 0.000, 0.04, 0, 0);
+        configureMotors(feeder, 0, 1000, 6000, false, false, 40, false, 0.013, 0.00865, 0.0001, 0.04, 0, 0);
+        configureMotors(indexer, 0, 1000, 6000, true, false, 60, false, 0.02, 0.008573, 0.000, 0.04, 0, 0);
         
     }
 
@@ -208,7 +209,7 @@ public class Robot extends TimedRobot {
         
     }
 
-    public void configureMotors(TalonFX motor, double v, double a, double j, boolean inverted, boolean brakeMode, double currentLimit, double ks, double kv, double ka, double kp, double ki, double kd) {
+    public void configureMotors(TalonFX motor, double v, double a, double j, boolean inverted, boolean brakeMode, double currentLimit, boolean isArmMotor, double ks, double kv, double ka, double kp, double ki, double kd) {
         TalonFXConfiguration TalonFXConfigs = new TalonFXConfiguration();
         TalonFXConfigs.Slot0
             .withKS(ks) // Add 0.25V output to overcome static friction
@@ -217,6 +218,12 @@ public class Robot extends TimedRobot {
             .withKP(kp)  // Position error of 2.5 rots results in 12V output
             .withKI(ki)    // No output for integrated error
             .withKD(kd); // Velocity error of 1 rps results in 0.1V output
+
+        if(isArmMotor)
+        {
+            TalonFXConfigs.Slot0.withKG(0.5);
+            TalonFXConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+        }
         
         //s = .25
         //v = .12
@@ -234,7 +241,6 @@ public class Robot extends TimedRobot {
             .withMotionMagicCruiseVelocity(v)
             .withMotionMagicAcceleration(a)
             .withMotionMagicJerk(j);
-        // Default is 80-160-1600. Adjust as needed.
 
         MotorOutputConfigs mconfigs = TalonFXConfigs.MotorOutput;
 

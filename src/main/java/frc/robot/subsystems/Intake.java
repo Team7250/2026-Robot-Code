@@ -11,6 +11,7 @@ public class Intake extends SubsystemBase {
 
     public static double LOW = 15.25;
     double HIGH = 0;
+
      //use motion magic to control the position
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     final MotionMagicVelocityDutyCycle velocity = new MotionMagicVelocityDutyCycle(0);
@@ -19,6 +20,7 @@ public class Intake extends SubsystemBase {
     String raiselower;
     public Intake() {
     }
+
 
     //this command is for testing intake
     public Command testIntake(double position)

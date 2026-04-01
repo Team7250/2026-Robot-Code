@@ -115,7 +115,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             },
 
             new PPHolonomicDriveController(
-                new PIDConstants(5, 0, 0.05), // Translation PID
+                new PIDConstants(6.5, 0, 0.05), // Translation PID
                 new PIDConstants(8, 0, 0.05)  // Rotation PID
             ),
             config,
@@ -237,7 +237,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void updateVision() {
-        String[] limelights = {"limelight-front", "limelight-side", "limelight-right"};
+        String[] limelights = {"limelight-front", "limelight-side"};
 
         for (String name : limelights) {
             if (!LimelightHelpers.getTV(name)) continue;
