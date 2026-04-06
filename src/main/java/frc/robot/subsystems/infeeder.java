@@ -40,8 +40,8 @@ public class infeeder extends SubsystemBase{
             if(on)
             {
                 
-                Robot.feeder.setControl(velocity.withVelocity(60));
-                Robot.indexer.setControl(velocity.withVelocity(50));
+                Robot.feeder.setControl(velocity.withVelocity(100));
+                Robot.indexer.setControl(velocity.withVelocity(100));
         }
         else
         {
