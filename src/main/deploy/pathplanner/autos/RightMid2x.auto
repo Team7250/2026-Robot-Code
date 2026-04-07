@@ -71,7 +71,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.25
                 }
               }
             ]
@@ -85,6 +85,12 @@
                 "type": "named",
                 "data": {
                   "name": "intakedown"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
                 }
               },
               {
@@ -102,7 +108,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.25
                 }
               }
             ]
@@ -143,6 +149,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.75
@@ -157,7 +169,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.25
                 }
               }
             ]
@@ -174,6 +186,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.75
@@ -188,7 +206,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.25
                 }
               }
             ]
@@ -205,6 +223,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.75
@@ -219,7 +243,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.25
                 }
               }
             ]
