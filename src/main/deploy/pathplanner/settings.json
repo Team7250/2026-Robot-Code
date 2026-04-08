@@ -4,12 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "Center HP",
-    "CenterAutoClimb",
-    "CenterDepot",
-    "LeftAutoDepot",
+    "CenterAuto",
     "LeftMid2x",
-    "RightMid2x",
-    "RightHumanPlayerAuto"
+    "RightHumanPlayerAuto",
+    "RightMid2x"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,

@@ -68,7 +68,7 @@
     "rotation": 25.0994795297494
   },
   "reversed": false,
-  "folder": "CenterAutoClimb",
+  "folder": "CenterAuto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

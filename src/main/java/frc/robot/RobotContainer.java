@@ -103,16 +103,13 @@ public class RobotContainer {
         chooser = new SendableChooser<>();
         
         chooser.setDefaultOption("None", Commands.none());
-        chooser.addOption("LeftDepot", AutoBuilder.buildAuto("LeftAutoDepot"));        
         chooser.addOption("LeftMid2x", AutoBuilder.buildAuto("LeftMid2x"));
         
         chooser.addOption("RightMid2x", AutoBuilder.buildAuto("RightMid2x"));
         chooser.addOption("RightHumanPlayer", AutoBuilder.buildAuto("RightHumanPlayerAuto"));
 
         chooser.addOption("CenterToHumanPlayer", AutoBuilder.buildAuto("CenterHP"));
-        chooser.addOption("CenterToBoth", AutoBuilder.buildAuto("CenterDepotandHP"));
-        chooser.addOption("CenterToDepot", AutoBuilder.buildAuto("CenterDepot"));
-        chooser.addOption("CenterJustShoot", AutoBuilder.buildAuto("CenterAutoClimb"));
+        chooser.addOption("CenterJustShoot", AutoBuilder.buildAuto("CenterAuto"));
         chooser.addOption("TEST", AutoBuilder.buildAuto("NewAuto"));
         
         SmartDashboard.putData("Auto", chooser);
