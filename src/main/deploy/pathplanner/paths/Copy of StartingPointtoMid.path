@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 7.428987161198288,
-        "y": 1.9324679029957226
+        "x": 7.714566666666666,
+        "y": 2.670777777777778
       },
       "prevControl": {
-        "x": 7.48074179743224,
-        "y": 0.49627674750356743
+        "x": 7.766321302900618,
+        "y": 1.2345866222856228
       },
       "nextControl": {
-        "x": 7.3620823709459975,
-        "y": 3.789075832496753
+        "x": 7.647661876414375,
+        "y": 4.5273857072788095
       },
       "isLocked": false,
       "linkedName": "Endpoint1RightAuto"
     },
     {
       "anchor": {
-        "x": 5.966918687589158,
-        "y": 1.4278601997146938
+        "x": 6.368017118402282,
+        "y": 1.7513266761768898
       },
       "prevControl": {
-        "x": 5.9460382095571385,
-        "y": 2.8686131839239297
+        "x": 5.744647646582342,
+        "y": 3.0504092976731503
       },
       "nextControl": {
-        "x": 5.979857346647647,
-        "y": 0.5350927246790296
+        "x": 6.976134094151211,
+        "y": 0.4840297828498976
       },
       "isLocked": false,
       "linkedName": null
@@ -110,9 +110,9 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 3.75,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 540.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 560.0,
+    "maxAngularAcceleration": 560.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
