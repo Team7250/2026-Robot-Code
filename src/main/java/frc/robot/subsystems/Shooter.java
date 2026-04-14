@@ -26,6 +26,7 @@ public class Shooter extends SubsystemBase {
 
     private static InterpolatingDoubleTreeMap shooterVelocitiesMap = new InterpolatingDoubleTreeMap();
     public static double shootspeed;
+    public static boolean aimed;
 
     // --- TUNABLES  ---
     private final double BASE_EXIT_VELO = 11.0; // lower = stronger
@@ -156,8 +157,10 @@ public class Shooter extends SubsystemBase {
                 Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
 
                 if(Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1 && Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - targetRPS) < 10)  {
+                    RobotContainer.ledSubsystem.updatePattern("GOOD");
                     infeeder.feed(true);
                 } else {
+                    RobotContainer.ledSubsystem.updatePattern("BAD");
                     infeeder.feed(false);
                 }
                 shootspeed = targetRPS;

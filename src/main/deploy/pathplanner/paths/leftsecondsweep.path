@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 2.969,
-        "y": 6.43
+        "y": 6.854
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.866699305354176,
-        "y": 7.423660072467785
+        "x": 2.349078394666701,
+        "y": 7.202293569799052
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftshooterfirstswipe"
     },
     {
       "anchor": {
@@ -94,7 +94,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.41577825159914766,
       "rotationDegrees": 180.0
     },
     {
@@ -151,7 +151,7 @@
   "folder": "LeftShooterMid2x",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -50.0
+    "rotation": -50.61
   },
   "useDefaultConstraints": true
 }
