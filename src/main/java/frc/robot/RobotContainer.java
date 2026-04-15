@@ -44,6 +44,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.counter;
 import frc.robot.subsystems.infeeder;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -86,6 +87,7 @@ public class RobotContainer {
     public static StateMachine stateMachine = new StateMachine();
     public static infeeder infeed = new infeeder();
     public static LEDSubsystem ledSubsystem = new LEDSubsystem();
+    public static counter counterSubsystem = new counter();
 
     public final SendableChooser<Command> chooser;
 

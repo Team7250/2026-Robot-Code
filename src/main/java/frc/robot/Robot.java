@@ -121,12 +121,12 @@ public class Robot extends TimedRobot {
         //configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
         //configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
 
-        configureMotors(shooter1, 0, 1000, 5000, true, false, 40, false, 0.015, 0.0087, 0.05, 0.0, 0.00, 0.0);
-        configureMotors(shooter2, 0, 1000, 5000, false, false, 40, false, 0.015, 0.0087, 0.05, 0.0, 0.00, 0.0);
+        configureMotors(shooter1, 0, 1000, 5000, true, false, 40, false, 0.015, 0.0087, 0.0, 0.04, 0.00, 0.0);
+        configureMotors(shooter2, 0, 1000, 5000, false, false, 40, false, 0.015, 0.0087, 0.0, 0.04, 0.00, 0.0);
 
         configureMotors(RaiseLower1, 60, 150, 300, false, true, 30, true, .2, .12, .01, 1, 0, 0.15);
         configureMotors(RaiseLower2, 60, 150, 300, false, true, 30, true, .2, .12, .01, 1, 0, 0.15);
-        configureMotors(RotateIntake, 0, 1000, 6000, false, false, 40, false, 0.0525, .00877, 0.0001, 0.04, 0, 0);
+        configureMotors(RotateIntake, 0, 1000, 6000, false, false, 40, false, 0.0225, .0077, 0.0, 0.05, 0, 0);
 
         configureMotors(feeder, 0, 1000, 6000, false, false, 30, false, 0.013, 0.00865, 0.0001, 0.04, 0, 0);
         configureMotors(indexer, 0, 1000, 6000, true, false, 40, false, 0.02, 0.008573, 0.000, 0.04, 0, 0);

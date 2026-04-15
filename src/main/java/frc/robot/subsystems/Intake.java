@@ -9,7 +9,7 @@ import frc.robot.Robot;
 
 public class Intake extends SubsystemBase {
 
-    public static double LOW = 15.25;
+    public static double LOW = 15.5;
     double HIGH = 0;
 
      //use motion magic to control the position
