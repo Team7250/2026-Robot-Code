@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 
     // Shooter
     public static TalonFX shooter1 = new TalonFX(15);
-    public static TalonFX shooter2 = new TalonFX(16);
+    //public static TalonFX shooter2 = new TalonFX(16);
 
     // Intake
     public static TalonFX RaiseLower1 = new TalonFX(17);
@@ -121,8 +121,8 @@ public class Robot extends TimedRobot {
         //configureMotors(climb1, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
         //configureMotors(climb2, 80, 160, 1600, false, true, 40,0,0,0,0,0,0);
 
-        configureMotors(shooter1, 0, 1000, 5000, true, false, 40, false, 0.015, 0.0087, 0.0, 0.04, 0.00, 0.0);
-        configureMotors(shooter2, 0, 1000, 5000, false, false, 40, false, 0.015, 0.0087, 0.0, 0.04, 0.00, 0.0);
+        configureMotors(shooter1, 0, 1000, 5000, true, false, 40, false, 0.011, 0.00845, 0.0, 0.035, 0.00, 0.0);
+        //configureMotors(shooter2, 0, 1000, 5000, false, false, 40, false, 0.015, 0.0087, 0.0, 0.04, 0.00, 0.0);
 
         configureMotors(RaiseLower1, 60, 150, 300, false, true, 30, true, .2, .12, .01, 1, 0, 0.15);
         configureMotors(RaiseLower2, 60, 150, 300, false, true, 30, true, .2, .12, .01, 1, 0, 0.15);

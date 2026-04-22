@@ -249,7 +249,7 @@ public class RobotContainer {
                 intake.stopRoller());
 
         // AGITATE
-        xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(60, 8.75));
+        xbox.a().and(manualOverride.negate()).onTrue(intake.testBoth(60, 9.25));
         xbox.a().and(manualOverride.negate()).onFalse(intake.intake(false, "DOWN"));
 
         // intakeDown.onTrue(intake.testIntakePower(0));
