@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase {
         // 4. Alliance & Hub Parameters
         Optional<Alliance> alliance = DriverStation.getAlliance();
         boolean isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
-        final Translation2d hubPos = isRed ? new Translation2d(11.911, 4.305) : new Translation2d(4.627, 4.305);
+        final Translation2d hubPos = isRed ? new Translation2d(11.915, 4.05) : new Translation2d(4.62, 4.05);
 
         // 5. Predictive Position Lookahead
         double lookahead = currentMeasuredLatency + FEEDER_DELAY;
