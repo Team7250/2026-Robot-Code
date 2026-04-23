@@ -107,7 +107,7 @@ public class RobotContainer {
         chooser = new SendableChooser<>();
 
         chooser.setDefaultOption("None", Commands.none());
-        chooser.addOption("LeftMid2x", AutoBuilder.buildAuto("LeftMid2x"));
+        chooser.addOption("LeftMid2x", AutoBuilder.buildAuto("ShooterLeftMid2x"));
 
         chooser.addOption("ShooterRightMid2x", AutoBuilder.buildAuto("ShooterRightMid2x"));
         chooser.addOption("Right Anti 1.5x", AutoBuilder.buildAuto("RightAnti1dot5x"));
