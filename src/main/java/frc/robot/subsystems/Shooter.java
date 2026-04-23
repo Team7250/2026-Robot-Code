@@ -202,7 +202,7 @@ public class Shooter extends SubsystemBase {
 
     public Command shootAuto() {
         return runOnce(() -> {
-            Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+            Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS+2));
             // Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
         });
     }
