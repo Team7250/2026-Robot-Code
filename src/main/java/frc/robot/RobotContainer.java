@@ -210,10 +210,9 @@ public class RobotContainer {
                         .alongWith(ledSubsystem.runPattern("SHOOT")));
 
         // PASSING
-        xbox.leftTrigger().and(manualOverride.negate()).onTrue(
+        xbox.leftTrigger().and(manualOverride.negate()).whileTrue(
                 shooter.shoot("LOW")
-                        .alongWith(stateMachine.SetState(4))
-                        .alongWith(ledSubsystem.runPattern("PASS")));
+                        .alongWith(stateMachine.SetState(4)));
         xbox.leftTrigger().and(manualOverride.negate()).onFalse(
                 shooter.shoot("OFF")
                         .alongWith(stateMachine.SetState(4))
