@@ -131,22 +131,24 @@ public class RobotContainer {
     private void configureBindings() {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(() -> {
-                    double reduction = (-joystick.getRawAxis(3) + 1) / 2;
+                    // double reduction = (-joystick.getRawAxis(3) + 1) / 2;
+                    // TODO: setting reduction permanently to one since there isnt a slider on xbox controller. need to ask to see what we can do during the meeting
+                    double reduction = 1;
                     // SmartDashboard.putNumber("Speed %", reduction);
                     reduction = MathUtil.clamp(reduction, .25, 1);
 
                     if (fieldOrient) {
                         return drive
-                                .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
-                                .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
-                                .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction)
+                                .withVelocityX(-xbox.getLeftY() * MaxSpeed * reduction)
+                                .withVelocityY(-xbox.getLeftX() * MaxSpeed * reduction)
+                                .withRotationalRate(-xbox.getRightX() * MaxAngularRate * reduction)
                                 .withDeadband(.6)
                                 .withRotationalDeadband(1);
                     } else {
                         return rcdrive
-                                .withVelocityX(-joystick.getRawAxis(1) * MaxSpeed * reduction)
-                                .withVelocityY(-joystick.getRawAxis(0) * MaxSpeed * reduction)
-                                .withRotationalRate(-joystick.getRawAxis(2) * MaxAngularRate * reduction);
+                                .withVelocityX(-xbox.getLeftY() * MaxSpeed * reduction)
+                                .withVelocityY(-xbox.getLeftX() * MaxSpeed * reduction)
+                                .withRotationalRate(-xbox.getRightX() * MaxAngularRate * reduction);
                     }
 
                 }));
