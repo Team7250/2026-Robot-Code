@@ -12,99 +12,90 @@ public class Intake extends SubsystemBase {
     public static double LOW = 15.5;
     double HIGH = 0;
 
-     //use motion magic to control the position
+    // use motion magic to control the position
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     final MotionMagicVelocityDutyCycle velocity = new MotionMagicVelocityDutyCycle(0);
 
     boolean rotate = false;
     String raiselower;
+
     public Intake() {
     }
 
-
-    //this command is for testing intake
-    public Command testIntake(double position)
-    {
+    // this command is for testing intake
+    public Command testIntake(double position) {
         return runOnce(() -> {
             Robot.RaiseLower1.setControl(m_request.withPosition(position));
         });
     }
 
-    //this command is for testing intake
-    public Command testIntakePower(double power)
-    {
+    // this command is for testing intake
+    public Command testIntakePower(double power) {
         return runOnce(() -> {
             Robot.RaiseLower1.set(power);
         });
     }
 
-    public Command testRotate(double rps)
-    {
+    public Command testRotate(double rps) {
         return runOnce(() -> {
             if (rps != 0) {
-               Robot.RotateIntake.setControl(velocity.withVelocity(rps));
-            }
-            else {
-                Robot.RotateIntake.set(0); 
+                Robot.RotateIntake.setControl(velocity.withVelocity(rps));
+            } else {
+                Robot.RotateIntake.set(0);
             }
         });
     }
 
-    public Command stopRoller()
-    {
+    public Command stopRoller() {
         return runOnce(() -> {
             Robot.RotateIntake.set(0);
         });
     }
 
-    public Command Rezero() {
+    public Command Rezero(String type) {
         return runOnce(() -> {
+            if (type.equals("UP")) {
                 Robot.RaiseLower1.setPosition(0);
                 Robot.RaiseLower2.setPosition(0);
-            }
-        );
+            } else if (type.equals("DOWN")) {
+                Robot.RaiseLower1.setPosition(LOW);
+                Robot.RaiseLower2.setPosition(LOW);
+            };
+        });
     }
-    public Command testBoth(double rps, double position)
-    {
+
+    public Command testBoth(double rps, double position) {
         return runOnce(() -> {
             if (rps != 0) {
                 Robot.RaiseLower1.setControl(m_request.withPosition(position));
                 Robot.RotateIntake.setControl(velocity.withVelocity(rps));
-            }
-            else {
-                Robot.RotateIntake.set(0); 
+            } else {
+                Robot.RotateIntake.set(0);
             }
         });
     }
 
-    //actual intaking command
-        public Command intake(boolean rotate, String raiselower) {
-            return runOnce(() -> {
+    // actual intaking command
+    public Command intake(boolean rotate, String raiselower) {
+        return runOnce(() -> {
 
-            
-           
-
-            //raiselower is a string now, DOWN = down position
-            if(raiselower == "DOWN")
-            {
+            // raiselower is a string now, DOWN = down position
+            if (raiselower == "DOWN") {
                 Robot.RaiseLower1.setControl(m_request.withPosition(LOW));
             }
-            //UP = upper position
-            else if (raiselower == "UP")
-            {
+            // UP = upper position
+            else if (raiselower == "UP") {
                 Robot.RaiseLower1.setControl(m_request.withPosition(HIGH));
             }
 
-            //we can turn off the roller immediately
-            if(!rotate)
-            {
+            // we can turn off the roller immediately
+            if (!rotate) {
                 Robot.RotateIntake.set(0);
             }
 
-            //spin the intake sequentially after the arm goes down
+            // spin the intake sequentially after the arm goes down
         }).andThen(() -> {
-            if(rotate)
-            {
+            if (rotate) {
                 Robot.RotateIntake.setControl(velocity.withVelocity(125));
             }
         });

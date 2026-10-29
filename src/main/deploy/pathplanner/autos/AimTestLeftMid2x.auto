@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ActivateLEDs"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftShooterfirstswipe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakedown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "teleopshoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopfeed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopshoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftsecondsweep"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakedown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "teleopshoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

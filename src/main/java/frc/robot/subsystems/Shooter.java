@@ -29,22 +29,23 @@ public class Shooter extends SubsystemBase {
     public static boolean aimed;
 
     // --- TUNABLES ---
-    private final double BASE_EXIT_VELO = 11.0; // lower = stronger
-    private final double HIGH_SPEED_EXIT_VELO = 2.0;
-    private final double BASE_RADIAL_FUDGE = 2.5; // higher = stronger
-    private final double HIGH_SPEED_RADIAL_FUDGE = 15.0;
+    private final double BASE_EXIT_VELO = 8.5; // lower = stronger
+    private final double HIGH_SPEED_EXIT_VELO = 2.5;
+    private final double BASE_RADIAL_FUDGE = 1.5; // higher = stronger
+    private final double HIGH_SPEED_RADIAL_FUDGE = 10.0;
     private final double FEEDER_DELAY = 0.08;
-    private final double IDLESPEED = 30;
+    private final double IDLESPEED = 5;
     private final double tolerance = 7.5;
 
     // --- CALIBRATION ---
     // This ONLY applies when movingRight is true.
-    private final double RIGHT_SIDE_FUDGE_DEG = 5.0;
+    private final double RIGHT_SIDE_FUDGE_DEG = 0;
     // Multiplier for leading the shot specifically when moving toward driver's
     // right.
-    private final double RIGHT_SIDE_BIAS_SCALAR = 1.35;
+    private final double RIGHT_SIDE_BIAS_SCALAR = 1;
 
     private double targetRPS = 0;
+    private double passRPS = 0;
     private Rotation2d targetHeading = new Rotation2d();
     private double currentMeasuredLatency = 0.02;
     public double reduction = 1.0; // RE-ADDED
@@ -53,12 +54,13 @@ public class Shooter extends SubsystemBase {
             6.0, 0, 0.2);
 
     public Shooter() {
-        shooterVelocitiesMap.put(2.0, 40.0);
-        shooterVelocitiesMap.put(2.5, 41.7);
-        shooterVelocitiesMap.put(3.0, 45.0);
-        shooterVelocitiesMap.put(3.5, 52.0);
-        shooterVelocitiesMap.put(4.0, 57.0);
+        shooterVelocitiesMap.put(2.0, 44.0);
+        shooterVelocitiesMap.put(2.5, 45.7);
+        shooterVelocitiesMap.put(3.0, 49.0);
+        shooterVelocitiesMap.put(3.5, 56.0);
+        shooterVelocitiesMap.put(4.0, 61.0);
         shooterVelocitiesMap.put(5.0, 66.0);
+        shooterVelocitiesMap.put(10.0, 108.0);
 
         headingPID.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -88,6 +90,7 @@ public class Shooter extends SubsystemBase {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         boolean isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
         final Translation2d hubPos = isRed ? new Translation2d(11.915, 4.05) : new Translation2d(4.62, 4.05);
+        final double passTarget = isRed ? 16.0 : 0.5;
 
         // 5. Predictive Position Lookahead
         double lookahead = currentMeasuredLatency + FEEDER_DELAY;
@@ -127,6 +130,9 @@ public class Shooter extends SubsystemBase {
         double radialVel = (robotVelField.getX() * unitToHub.getX()) + (robotVelField.getY() * unitToHub.getY());
         targetRPS = baseRps - (radialVel * dynamicRadialFudge);
 
+        double passDist = Math.abs(currentPose.getX() - passTarget);
+        passRPS = MathUtil.clamp(shooterVelocitiesMap.get(passDist), 0, 100.0);
+
         reduction = MathUtil.clamp((-Robot.joystick.getRawAxis(3) + 1) / 2, 0.2, 1.0);
 
         // Dashboard Telemetry
@@ -139,6 +145,7 @@ public class Shooter extends SubsystemBase {
          * SmartDashboard.putNumber("Shooter/Reduction", reduction);
          * SmartDashboard.putNumber("Speed %", reduction);
          */
+        SmartDashboard.putNumber("rps", 1);
         SmartDashboard.putNumber("distance", dist);
         SmartDashboard.putNumber("targetrps", targetRPS);
     }
@@ -159,7 +166,7 @@ public class Shooter extends SubsystemBase {
                 Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
                 // Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
 
-                if (Math.abs(currentRot) - Math.abs(targetHeading.getRadians()) < 1
+                if (Math.abs(Math.abs(currentRot) - Math.abs(targetHeading.getRadians())) < 1
                         && Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - targetRPS) < tolerance) {
                     RobotContainer.ledSubsystem.updatePattern("GOOD");
                     infeeder.feed(true);
@@ -171,10 +178,10 @@ public class Shooter extends SubsystemBase {
             }, this, RobotContainer.drivetrain).finallyDo(i -> stopShooter());
         } else if (mode.equals("LOW")) {
             return Commands.run(() -> {
-                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
+                Robot.shooter1.setControl(new MotionMagicVelocityDutyCycle(passRPS));
                 // Robot.shooter2.setControl(new MotionMagicVelocityDutyCycle(targetRPS));
 
-                if (Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - targetRPS) < tolerance) {
+                if (Math.abs(Robot.shooter1.getVelocity(true).getValueAsDouble() - passRPS) < 20) {
                     RobotContainer.ledSubsystem.updatePattern("GOOD");
                     infeeder.feed(true);
                 } else {

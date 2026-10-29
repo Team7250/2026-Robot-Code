@@ -49,82 +49,90 @@ import frc.robot.subsystems.infeeder;
 import frc.robot.subsystems.LEDSubsystem;
 
 public class RobotContainer {
-    public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired
-                                                                                              // top speed
-    // magnitude changed to spin at a slower rate
-    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
-                                                                                            // second max angular
-                                                                                            // velocity
+        public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts
+                                                                                                  // desired
+                                                                                                  // top speed
+        // magnitude changed to spin at a slower rate
+        public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
+                                                                                                // second max angular
+                                                                                                // velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    public static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    public static SwerveRequest.RobotCentric rcdrive = new SwerveRequest.RobotCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+        /* Setting up bindings for necessary control of the swerve drive platform */
+        public static SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
+                                                                                 // motors
+        public static SwerveRequest.RobotCentric rcdrive = new SwerveRequest.RobotCentric()
+                        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
+                                                                                 // motors
 
-    public static double allianceShiftTime = 0;
+        public static double allianceShiftTime = 0;
 
-    @SuppressWarnings("unused")
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    @SuppressWarnings("unused")
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+        @SuppressWarnings("unused")
+        private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+        @SuppressWarnings("unused")
+        private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+        private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    // Joysticks and buttons
-    public Joystick joystick = Robot.joystick;
-    public JoystickButton orientSwitch = Robot.orientSwitch;
-    JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 4);
-    JoystickButton brakeButton = new JoystickButton(joystick, 2);
-    public static CommandXboxController xbox = new CommandXboxController(1); // Alex
-    boolean fieldOrient = true;
+        // Joysticks and buttons
+        public Joystick joystick = Robot.joystick;
+        public JoystickButton orientSwitch = Robot.orientSwitch;
+        JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 4);
+        JoystickButton brakeButton = new JoystickButton(joystick, 11);
+        public static CommandXboxController xbox = new CommandXboxController(1); // Alex
+        boolean fieldOrient = true;
 
-    // Subsystems
-    public static Intake intake = new Intake();
-    public static Shooter shooter = new Shooter();
-    public static StateMachine stateMachine = new StateMachine();
-    public static infeeder infeed = new infeeder();
-    public static LEDSubsystem ledSubsystem = new LEDSubsystem();
-    public static counter counterSubsystem = new counter();
+        // Subsystems
+        public static Intake intake = new Intake();
+        public static Shooter shooter = new Shooter();
+        public static StateMachine stateMachine = new StateMachine();
+        public static infeeder infeed = new infeeder();
+        public static LEDSubsystem ledSubsystem = new LEDSubsystem();
+        public static counter counterSubsystem = new counter();
 
-    public final SendableChooser<Command> chooser;
+        public final SendableChooser<Command> chooser;
 
-    // Triggers
-    public static Trigger manualOverride = xbox.start();
-    // public static Trigger intakeDown = new Trigger(() ->
-    // Robot.RotateIntake.getPosition().getValueAsDouble() >= Intake.LOW);
+        // Triggers
+        public static Trigger manualOverride = xbox.start();
+        // public static Trigger intakeDown = new Trigger(() ->
+        // Robot.RotateIntake.getPosition().getValueAsDouble() >= Intake.LOW);
 
-    public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    public RobotContainer() {
-        configureBindings();
-        configurePathPlannerEventTriggers();
-        drivetrain.configurePathPlanner();
-        // SmartDashboard.putData(Telemetry.m_field);
-        PathPlannerLogging.setLogTargetPoseCallback(Telemetry::setTargetPose);
-        chooser = new SendableChooser<>();
+        public RobotContainer() {
+                configureBindings();
+                configurePathPlannerEventTriggers();
+                drivetrain.configurePathPlanner();
+                // SmartDashboard.putData(Telemetry.m_field);
+                PathPlannerLogging.setLogTargetPoseCallback(Telemetry::setTargetPose);
+                chooser = new SendableChooser<>();
 
-        chooser.setDefaultOption("None", Commands.none());
-        chooser.addOption("LeftMid2x", AutoBuilder.buildAuto("ShooterLeftMid2x"));
+                chooser.setDefaultOption("None", Commands.none());
+                chooser.addOption("LeftMid2x", AutoBuilder.buildAuto("AimTestLeftMid2x"));
+                // chooser.addOption("bsejfsdLeftMid2x",
+                // AutoBuilder.buildAuto("imTestLeftMid2x"));
 
-        chooser.addOption("ShooterRightMid2x", AutoBuilder.buildAuto("ShooterRightMid2x"));
-        chooser.addOption("Right Anti 1.5x", AutoBuilder.buildAuto("RightAnti1dot5x"));
-        chooser.addOption("RightHumanPlayer", AutoBuilder.buildAuto("RightHumanPlayerAuto"));
+                chooser.addOption("RightMid2x", AutoBuilder.buildAuto("ShooterRightMid2x"));
+                // chooser.addOption("TESTING (DO NOT USE) RightMid2x",
+                // AutoBuilder.buildAuto("TestingShooterRightMid2x"));
+                // chooser.addOption("RightHumanPlayer",
+                // AutoBuilder.buildAuto("RightHumanPlayerAuto"));
 
-        chooser.addOption("CenterToHumanPlayer", AutoBuilder.buildAuto("CenterHP"));
-        chooser.addOption("CenterJustShoot", AutoBuilder.buildAuto("CenterAuto"));
-        chooser.addOption("TEST", AutoBuilder.buildAuto("NewAuto"));
+                chooser.addOption("CenterToHumanPlayer", AutoBuilder.buildAuto("CenterHP"));
+                chooser.addOption("CenterHPDepot", AutoBuilder.buildAuto("CenterHPDepot"));
+                // chooser.addOption("CenterJustShoot", AutoBuilder.buildAuto("CenterAuto"));
+                // chooser.addOption("TEST", AutoBuilder.buildAuto("NewAuto"));
 
-        SmartDashboard.putData("Auto", chooser);
+                SmartDashboard.putData("Auto", chooser);
 
-        var followerControl = new Follower(Robot.RaiseLower1.getDeviceID(), MotorAlignmentValue.Opposed);
-        Robot.RaiseLower2.setControl(followerControl);
+                var followerControl = new Follower(Robot.RaiseLower1.getDeviceID(), MotorAlignmentValue.Opposed);
+                Robot.RaiseLower2.setControl(followerControl);
 
-        // SmartDashboard.putData(Telemetry.m_field);
+                // SmartDashboard.putData(Telemetry.m_field);
 
-        ledSubsystem.on();
+                ledSubsystem.on();
 
     }
 
@@ -385,60 +393,11 @@ public class RobotContainer {
         // At this point, if we're not teleop enabled, there is no hub.
         if (!DriverStation.isTeleopEnabled()) {
             return false;
+                }
         }
 
-        // We're teleop enabled, compute.
-        double matchTime = DriverStation.getMatchTime();
-        String gameData = DriverStation.getGameSpecificMessage();
-        // If we have no game data, we cannot compute, assume hub is active, as its
-        // likely early in teleop.
-        if (gameData.isEmpty()) {
-            return true;
-        }
-        boolean redInactiveFirst = false;
-        switch (gameData.charAt(0)) {
-            case 'R' -> redInactiveFirst = true;
-            case 'B' -> redInactiveFirst = false;
-            default -> {
-                // If we have invalid game data, assume hub is active.
-                return true;
-            }
-        }
 
-        // Shift was is active for blue if red won auto, or red if blue won auto.
-        boolean shift1Active = switch (alliance.get()) {
-            case Red -> !redInactiveFirst;
-            case Blue -> redInactiveFirst;
-        };
-
-        if (matchTime > 130) {
-            // Transition shift, hub is active.
-            allianceShiftTime = matchTime - 130;
-            return true;
-        } else if (matchTime > 105) {
-            // Shift 1
-            allianceShiftTime = matchTime - 105;
-            return shift1Active;
-        } else if (matchTime > 80) {
-            // Shift 2
-            allianceShiftTime = matchTime - 80;
-            return !shift1Active;
-        } else if (matchTime > 55) {
-            // Shift 3
-            allianceShiftTime = matchTime - 55;
-            return shift1Active;
-        } else if (matchTime > 30) {
-            // Shift 4
-            allianceShiftTime = matchTime - 30;
-            return !shift1Active;
-        } else {
-            // End game, hub always active.
-            allianceShiftTime = matchTime;
-            return true;
+        public Command getAutonomousCommand() {
+                return chooser.getSelected();
         }
-    }
-
-    public Command getAutonomousCommand() {
-        return chooser.getSelected();
-    }
 }

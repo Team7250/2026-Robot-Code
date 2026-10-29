@@ -17,7 +17,7 @@ import frc.robot.Robot;
 
 public class LEDSubsystem extends SubsystemBase {
   private static final int kPort = 9;
-  private static final int kLength = 266;
+  private static final int kLength = 235;
   private static final double FeetLength = 16.4;
 
   private final int brightness = 20;
