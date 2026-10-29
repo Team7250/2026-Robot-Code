@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.5950555555555557,
-        "y": 2.0763666666666665
+        "x": 1.3607560627674748,
+        "y": 2.4370756062767476
       },
       "prevControl": {
-        "x": 1.4290936235827658,
-        "y": 1.8893997253752737
+        "x": 1.194794130794685,
+        "y": 2.250108664985355
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shootcenterhp"
     }
   ],
   "rotationTargets": [],
@@ -68,7 +68,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 32.49479994485373
+    "rotation": 24.98391141401893
   },
   "reversed": false,
   "folder": "Center HP",

@@ -7,13 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "ActivateLEDs"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ActivateLEDs"
+            "name": "intake"
           }
         },
         {
@@ -25,25 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftShooterfirstswipe"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feed"
+            "pathName": "unoffensivefirstsweep"
           }
         },
         {
@@ -53,9 +35,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 3.0
+            "name": "teleopshoot"
           }
         },
         {
@@ -67,37 +49,31 @@
         {
           "type": "named",
           "data": {
+            "name": "stopshoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "leftsecondsweep"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feed"
+            "pathName": "Copy of secondsweep"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "intakedown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "teleopshoot"
           }
         }
       ]
