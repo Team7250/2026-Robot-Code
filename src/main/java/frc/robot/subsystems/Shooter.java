@@ -131,7 +131,7 @@ public class Shooter extends SubsystemBase {
         targetRPS = baseRps - (radialVel * dynamicRadialFudge);
 
         double passDist = Math.abs(currentPose.getX() - passTarget);
-        passRPS = MathUtil.clamp(shooterVelocitiesMap.get(passDist), 0, 100.0);
+        passRPS = 110;//MathUtil.clamp(shooterVelocitiesMap.get(passDist), 0, 100.0);
 
         reduction = MathUtil.clamp((-Robot.joystick.getRawAxis(3) + 1) / 2, 0.2, 1.0);
 

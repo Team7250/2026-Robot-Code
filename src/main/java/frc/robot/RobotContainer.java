@@ -53,7 +53,7 @@ public class RobotContainer {
                                                                                                   // desired
                                                                                                   // top speed
         // magnitude changed to spin at a slower rate
-        public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
+        public static double MaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond); // 3/4 of a rotation per
                                                                                                 // second max angular
                                                                                                 // velocity
 
@@ -77,11 +77,10 @@ public class RobotContainer {
         private final Telemetry logger = new Telemetry(MaxSpeed);
 
         // Joysticks and buttons
-        public Joystick joystick = Robot.joystick;
-        public JoystickButton orientSwitch = Robot.orientSwitch;
-        JoystickButton resetFieldCentricHeadingButton = new JoystickButton(joystick, 4);
-        JoystickButton brakeButton = new JoystickButton(joystick, 11);
         public static CommandXboxController xbox = new CommandXboxController(1); // Alex
+        public static CommandXboxController xboxdrive = new CommandXboxController(0); // Patrick
+        public static Trigger orientSwitch = xboxdrive.x();
+        public static Trigger resetFieldCentricHeadingButton = xboxdrive.y();
         boolean fieldOrient = true;
 
         // Subsystems
@@ -141,22 +140,22 @@ public class RobotContainer {
                 drivetrain.applyRequest(() -> {
                     // double reduction = (-joystick.getRawAxis(3) + 1) / 2;
                     // TODO: setting reduction permanently to one since there isnt a slider on xbox controller. need to ask to see what we can do during the meeting
-                    double reduction = 1;
+                    double reduction = 0.6;
                     // SmartDashboard.putNumber("Speed %", reduction);
                     reduction = MathUtil.clamp(reduction, .25, 1);
 
                     if (fieldOrient) {
                         return drive
-                                .withVelocityX(-xbox.getLeftY() * MaxSpeed * reduction)
-                                .withVelocityY(-xbox.getLeftX() * MaxSpeed * reduction)
-                                .withRotationalRate(-xbox.getRightX() * MaxAngularRate * reduction)
+                                .withVelocityX(-xboxdrive.getLeftY() * MaxSpeed * reduction)
+                                .withVelocityY(-xboxdrive.getLeftX() * MaxSpeed * reduction)
+                                .withRotationalRate(-xboxdrive.getRightX() * MaxAngularRate * reduction)
                                 .withDeadband(.6)
                                 .withRotationalDeadband(1);
                     } else {
                         return rcdrive
-                                .withVelocityX(-xbox.getLeftY() * MaxSpeed * reduction)
-                                .withVelocityY(-xbox.getLeftX() * MaxSpeed * reduction)
-                                .withRotationalRate(-xbox.getRightX() * MaxAngularRate * reduction);
+                                .withVelocityX(-xboxdrive.getLeftY() * MaxSpeed * reduction)
+                                .withVelocityY(-xboxdrive.getLeftX() * MaxSpeed * reduction)
+                                .withRotationalRate(-xboxdrive.getRightX() * MaxAngularRate * reduction);
                     }
 
                 }));
@@ -307,7 +306,9 @@ public class RobotContainer {
                 intake.testIntakePower(0));
         // RESET ZERO
         xbox.a().and(manualOverride).onTrue(
-                intake.Rezero());
+                intake.Rezero("UP"));
+        xbox.leftBumper().and(manualOverride).onTrue(
+                intake.Rezero("DOWN"));
         // INDEXER AND FEEDER
         xbox.x().and(manualOverride).onTrue(
                 infeed.testfeed(-10).alongWith(shooter.testShooters(22.4)));
@@ -393,8 +394,9 @@ public class RobotContainer {
         // At this point, if we're not teleop enabled, there is no hub.
         if (!DriverStation.isTeleopEnabled()) {
             return false;
-                }
         }
+        return false;
+}
 
 
         public Command getAutonomousCommand() {
